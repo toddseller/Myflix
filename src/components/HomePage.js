@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import HomePageList from './HomePageList'
 import { getHomePageData } from '../actions/homePage'
@@ -64,6 +65,14 @@ class HomePage extends Component {
           <div className="hero-card-text">
             <h1 className="hero-card-title">Your movies. Your TV shows. Your way.</h1>
             <h2 className="hero-card-subtitle">Your personal database for movies and TV shows</h2>
+          </div>
+          <div className="cta-link-wrapper">
+            <Link to={ '/signup' } className="btn btn-red btn-large">
+              <span>CREATE YOUR FREE ACCOUNT TODAY</span>
+              <span><svg viewBox="0 0 6 12" xmlns="http://www.w3.org/2000/svg"><desc>chevron</desc><path
+                d="M.61 1.312l.78-.624L5.64 6l-4.25 5.312-.78-.624L4.36 6z" fill="none"
+                fill-rule="evenodd"></path></svg></span>
+            </Link>
           </div>
         </div>
         <div className="homepage-cards">

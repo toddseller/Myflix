@@ -1,6 +1,7 @@
 import React from 'react'
 import { Router, Route, Switch } from 'react-router-dom'
 import createHistory from 'history/createBrowserHistory'
+import 'normalize.css'
 
 import HomePage from '../components/HomePage'
 import Header from '../components/header/Header'
