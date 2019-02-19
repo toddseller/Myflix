@@ -1,11 +1,13 @@
 .footer
 {
   height: 100px;
+  width: 100vw;
   background-image: linear-gradient(to top, #000, transparent 100%);;
   color: #8c8c8c;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  bottom: 0;
   z-index: 100;
 }

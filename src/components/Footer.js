@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 
 import '../styles/footer.css'
 
-const Footer = ({year}) => {
+const Footer = ({ year }) => {
   return (
-    <div className="footer">&copy; {year} Myflix</div>
+    <div className="footer">&copy; { year } Myflix</div>
   )
 }
 

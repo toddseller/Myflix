@@ -1,0 +1,16 @@
+.header-wrapper
+{
+  background: transparent;
+  position: absolute;
+  width: 100vw;
+  max-width: 1920px;
+  padding-top: 20px;
+  z-index: 10;
+}
+
+.header
+{
+  height: 80px;
+  margin: 0 4rem;
+  padding-top: .5rem;
+}

@@ -12,7 +12,7 @@ body {
 
 .site-content {
   flex: 1 0 auto;
-  padding: 1.5em 1.5em 0;
+  /*padding: 1.5em 1.5em 0;*/
   width: 100%;
 }
 
