@@ -63,7 +63,7 @@ class HomePage extends Component {
         <div className="hero-card">
           <div className="hero-card-background"></div>
           <div className="hero-card-text">
-            <h1 className="hero-card-title">Your movies. Your TV shows. Your way.</h1>
+            <h1 className="hero-card-title">Your movies. Your shows. Your way.</h1>
             <h2 className="hero-card-subtitle">Your personal database for movies and TV shows</h2>
             <div className="cta-link-wrapper">
               <Link to={ '/signup' } className="btn btn-red btn-large">
