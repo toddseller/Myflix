@@ -1,0 +1,40 @@
+body {
+  background: #000000;
+  font-family: 'Helvetica Neue', Helvetica , Arial, sans-serif;
+  font-size: 16px;
+}
+
+.site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.site-content {
+  flex: 1 0 auto;
+  padding: 1.5em 1.5em 0;
+  width: 100%;
+}
+
+.btn {
+  line-height: normal;
+  padding: 7px 17px;
+  font-weight: 400;
+  font-size: 1.1rem;
+  border-radius: 3px;
+  color: #ffffff;
+}
+
+a.btn:hover {
+  text-decoration: none !important;
+  color: #ffffff
+}
+
+.btn-red {
+  background-color: #e50914;
+}
+
+.btn-right {
+  float: right;
+}
+

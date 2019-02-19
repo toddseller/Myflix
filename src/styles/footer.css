@@ -1,0 +1,11 @@
+.footer
+{
+  height: 100px;
+  background-image: linear-gradient(to top, #000, transparent 100%);;
+  color: #8c8c8c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 100;
+}
