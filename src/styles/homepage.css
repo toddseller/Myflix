@@ -35,7 +35,7 @@
 
 .homepage-cards
 {
-  max-width: 1820px;
+  width: 100vw;
   margin: 0 auto;
   position: relative;
   margin-top: 0;
@@ -110,6 +110,7 @@
   font-weight: 400;
   font-size: 1.625rem;
   margin: 1rem 0;
+  margin-bottom: 2.5rem;
 }
 
 .homepage-gallery
@@ -128,7 +129,7 @@
 
 .homepage-gallery-panel.show
 {
-  height: 630px;
+  height: 638px;
   align-content: flex-start;
 }
 
@@ -157,6 +158,17 @@ img.show
   transition: .5s ease-in all;
 }
 
+
+
+.cta-chevron
+{
+  width: .9rem;
+  height: 1.2rem;
+  margin-top: 3px;
+  position: absolute;
+  padding: 0 .5rem;
+}
+
 @media (min-width: 1200px)
 {
   .hero-card-background
@@ -173,6 +185,6 @@ img.show
   }
   .hero-card-title
   {
-    font-size: 5rem;
+    font-size: 4rem;
   }
 }

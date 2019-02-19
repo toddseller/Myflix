@@ -6,6 +6,7 @@ import 'normalize.css'
 import HomePage from '../components/HomePage'
 import Header from '../components/header/Header'
 import Login from '../components/Login'
+import Signup from '../components/Signup'
 import Footer from '../components/Footer'
 import '../styles/base.css'
 
@@ -21,6 +22,7 @@ const AppRouter = () => {
             <Switch>
               <Route path="/" exact component={ HomePage } />
               <Route path="/login" component={ Login } />
+              <Route path="/signup" component={ Signup } />
             </Switch>
           </div>
         </div>

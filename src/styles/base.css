@@ -43,3 +43,9 @@ a.btn:hover {
   float: right;
 }
 
+.btn-large
+{
+  padding: 14px 3rem 14px 2rem;
+  font-size: 1.75rem;
+}
+
