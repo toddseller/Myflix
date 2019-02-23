@@ -80,7 +80,7 @@
   height: 100vh;
   margin: 0;
   padding: 0;
-  background-image: url("/images/background_small.jpg");
+  background-image: url("https://cdn.myflix.stream/images/background_small.jpg");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
@@ -175,7 +175,7 @@ img.show
   {
     position: absolute;
     top: 0;
-    background-image: url("/images/main_background.jpg");
+    background-image: url("https://cdn.myflix.stream/images/main_background.jpg");
   }
   .homepage-container:after
   {
