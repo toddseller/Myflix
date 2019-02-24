@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import HomePageList from './HomePageList'
+import TopUserList from './TopUserList'
 import { getHomePageData } from '../actions/homePage'
 import '../styles/base.css'
 import '../styles/homepage.css'
@@ -13,7 +14,8 @@ class HomePage extends Component {
     this.state = {
       displayTopMovies: true,
       displayRecentMovies: false,
-      displayRecentShows: false
+      displayRecentShows: false,
+      displayTopUsers: false
     }
   }
 
@@ -24,19 +26,29 @@ class HomePage extends Component {
       this.setState({
         displayTopMovies: false,
         displayRecentMovies: true,
-        displayRecentShows: false
+        displayRecentShows: false,
+        displayTopUsers: false
       })
     } else if (element === 'tm') {
       this.setState({
         displayTopMovies: true,
         displayRecentMovies: false,
-        displayRecentShows: false
+        displayRecentShows: false,
+        displayTopUsers: false
       })
     } else if (element === 'rs') {
       this.setState({
         displayTopMovies: false,
         displayRecentMovies: false,
-        displayRecentShows: true
+        displayRecentShows: true,
+        displayTopUsers: false
+      })
+    } else if (element === 'tu') {
+      this.setState({
+        displayTopMovies: false,
+        displayRecentMovies: false,
+        displayRecentShows: false,
+        displayTopUsers: true
       })
     }
   }
@@ -57,7 +69,7 @@ class HomePage extends Component {
   }
 
   render() {
-    const { topMovies, recentMovies, recentShows } = this.props
+    const { topMovies, recentMovies, recentShows, topUsers } = this.props
     return (
       <div className="homepage-container">
         <div className="hero-card">
@@ -95,10 +107,17 @@ class HomePage extends Component {
             >
               Recent TV Shows
             </div>
+            <div
+              onClick={ () => this.toggleDisplay('tu') }
+              className={ this.state.displayTopUsers ? 'homepage-cards-nav-element active' : 'homepage-cards-nav-element' }
+            >
+              Top Users
+            </div>
           </div>
           { this.state.displayRecentMovies && this.displayItems(recentMovies, 'movie') }
           { this.state.displayTopMovies && this.displayItems(topMovies, 'movie') }
           { this.state.displayRecentShows && this.displayItems(recentShows, 'show') }
+          { this.state.displayTopUsers && <TopUserList users={ topUsers } />}
         </div>
       </div>
     )
@@ -108,7 +127,8 @@ class HomePage extends Component {
 const mapStateToProps = (state) => ({
   topMovies: state.home.topMovies,
   recentMovies: state.home.recentMovies,
-  recentShows: state.home.recentShows
+  recentShows: state.home.recentShows,
+  topUsers: state.home.topUsers
 })
 
 export default connect(mapStateToProps, { getHomePageData })(HomePage)

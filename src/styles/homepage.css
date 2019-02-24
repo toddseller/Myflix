@@ -127,7 +127,8 @@
   padding: 0 60px;
 }
 
-.homepage-gallery-panel.show
+.homepage-gallery-panel.show,
+.homepage-gallery-panel.top-users
 {
   height: 638px;
   align-content: flex-start;
@@ -158,8 +159,6 @@ img.show
   transition: .5s ease-in all;
 }
 
-
-
 .cta-chevron
 {
   width: .9rem;
@@ -167,6 +166,51 @@ img.show
   margin-top: 3px;
   position: absolute;
   padding: 0 .5rem;
+}
+
+.top-users
+{
+  color: #ffffff;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.top-user-card
+{
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.top-user-avatar
+{
+  width: 100px;
+  text-align: center;
+}
+
+.top-user-avatar img
+{
+  width: 100px;
+}
+
+.top-user-counts
+{
+  width: 185px;
+  font-size: 1.2rem;
+}
+
+.top-user-counts-user
+{
+  color: #e50914;
+  font-weight: 600;
+}
+
+.top-user-counts div
+{
+  margin: 5px 0;
 }
 
 @media (min-width: 1200px)
