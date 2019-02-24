@@ -90,16 +90,16 @@ class HomePage extends Component {
         <div className="homepage-cards">
           <div className="homepage-cards-nav">
             <div
-              onClick={ () => this.toggleDisplay('rm') }
-              className={ this.state.displayRecentMovies ? 'homepage-cards-nav-element active' : 'homepage-cards-nav-element' }
-            >
-              Recent Movies
-            </div>
-            <div
               onClick={ () => this.toggleDisplay('tm') }
               className={ this.state.displayTopMovies ? 'homepage-cards-nav-element active' : 'homepage-cards-nav-element' }
             >
               Most Popular
+            </div>
+            <div
+              onClick={ () => this.toggleDisplay('rm') }
+              className={ this.state.displayRecentMovies ? 'homepage-cards-nav-element active' : 'homepage-cards-nav-element' }
+            >
+              Recent Movies
             </div>
             <div
               onClick={ () => this.toggleDisplay('rs') }
@@ -114,8 +114,8 @@ class HomePage extends Component {
               Top Users
             </div>
           </div>
-          { this.state.displayRecentMovies && this.displayItems(recentMovies, 'movie') }
           { this.state.displayTopMovies && this.displayItems(topMovies, 'movie') }
+          { this.state.displayRecentMovies && this.displayItems(recentMovies, 'movie') }
           { this.state.displayRecentShows && this.displayItems(recentShows, 'show') }
           { this.state.displayTopUsers && <TopUserList users={ topUsers } />}
         </div>

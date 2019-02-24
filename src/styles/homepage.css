@@ -48,7 +48,6 @@
 {
   position: relative;
   z-index: 2;
-  color: #8c8c8c;
   font-size: 1.5rem;
   max-width: 1240px;
   display: flex;
@@ -59,11 +58,13 @@
 .homepage-cards-nav-element
 {
   cursor: pointer;
+  color: #8c8c8c;
 }
 
 .homepage-cards-nav-element.active
 {
   color: #ffffff;
+  transition: all 0.15s ease-in-out;
 }
 
 .homepage-cards-nav-element.active:after
