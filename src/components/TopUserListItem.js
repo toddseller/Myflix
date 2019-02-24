@@ -15,7 +15,7 @@ const TopUserListItem = ({ user }) => {
       </div>
       <div className="top-user-counts">
         <div className="top-user-counts-user">{ user.userName }</div>
-        <div><FontAwesomeIcon icon="film" />&nbsp;{ `${ user.movieCount } Movies` }</div>
+        <div><FontAwesomeIcon icon="film" fixedWidth/>&nbsp;{ `${ user.movieCount } Movies` }</div>
         { user.showCount > 0 && <div><FontAwesomeIcon icon="tv" />&nbsp;{ `${ user.showCount } ${show}` }</div> }
       </div>
     </div>
