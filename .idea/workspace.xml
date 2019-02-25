@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="79c048b6-3cf1-4a60-a6a8-a49ddd3d0685" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/components/HomePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/HomePage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/styles/homepage.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/styles/homepage.css" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/node_modules/" />
@@ -32,8 +31,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/styles/homepage.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="128" column="10" selection-start-line="128" selection-start-column="10" selection-end-line="128" selection-end-column="10" />
+            <state relative-caret-position="240">
+              <caret line="61" column="36" selection-start-line="61" selection-start-column="36" selection-end-line="61" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -267,11 +266,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55561000" />
+    <option name="totallyTimeSpent" value="56184000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="840" y="23" width="840" height="1027" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24908425" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -492,8 +490,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/styles/homepage.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="128" column="10" selection-start-line="128" selection-start-column="10" selection-end-line="128" selection-end-column="10" />
+        <state relative-caret-position="240">
+          <caret line="61" column="36" selection-start-line="61" selection-start-column="36" selection-end-line="61" selection-end-column="36" />
         </state>
       </provider>
     </entry>

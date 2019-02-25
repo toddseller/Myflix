@@ -59,6 +59,7 @@
 {
   cursor: pointer;
   color: #8c8c8c;
+  transition: all 0.15s ease-in-out;
 }
 
 .homepage-cards-nav-element.active
