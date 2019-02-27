@@ -54,6 +54,7 @@ class HomePage extends Component {
   }
 
   displayItems = (items, type) => {
+    console.log(items[0])
     const className = `homepage-gallery-panel ${ type }`
     return (
       <div className="homepage-gallery">

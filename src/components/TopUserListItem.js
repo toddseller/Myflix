@@ -10,7 +10,7 @@ const TopUserListItem = ({ user }) => {
   return (
     <div className="top-user-card">
       <div className="top-user-avatar">
-        { user.avatar !== '' ? <img src={user.avatar} /> :
+        { user.avatar !== '' ? <img src={user.avatar} alt={`${user.userName} avatar`}/> :
           <FontAwesomeIcon icon='user-secret' style={{width: '90px', height:'90px', color: '#e50914', marginBottom: '10px'}}/> }
       </div>
       <div className="top-user-counts">

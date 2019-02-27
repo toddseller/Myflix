@@ -7,7 +7,7 @@ const TopUserList = ({ users }) => {
     <div className="homepage-gallery">
       <div className="homepage-gallery-panel top-users">
         { users.map(user => {
-          return <TopUserListItem user={ user } />
+          return <TopUserListItem key={user.id} user={ user } />
         }) }
       </div>
     </div>
