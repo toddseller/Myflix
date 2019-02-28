@@ -24,6 +24,7 @@ body {
   font-size: 1.1rem;
   border-radius: 3px;
   color: #ffffff;
+  border: 0;
 }
 
 a {
@@ -47,5 +48,15 @@ a.btn:hover {
 {
   padding: 14px 3rem 14px 2rem;
   font-size: 1.75rem;
+}
+
+.btn-login
+{
+  width: 100%;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 24px 0 12px;
+  padding: 16px;
 }
 

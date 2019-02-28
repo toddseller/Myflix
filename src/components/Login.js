@@ -16,7 +16,7 @@ class Login extends Component {
         <div className="login-card">
           <div className="login-card-background"></div>
         </div>
-        <div className='login-form'>
+        <div className='login-body'>
           <LoginForm onSubmit={ this.onSubmit } />
         </div>
       </div>
