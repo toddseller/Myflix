@@ -4,6 +4,7 @@ import reduxThunk from 'redux-thunk'
 
 import authReducer from '../reducers/authReducer'
 import homePageReducer from '../reducers/homePageReducer'
+import userMovieReducer from '../reducers/userMovieReducer'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -12,6 +13,7 @@ export default () => {
     combineReducers({
       auth: authReducer,
       home: homePageReducer,
+      movies: userMovieReducer,
       form: formReducer
     }),
     composeEnhancers(applyMiddleware(reduxThunk))

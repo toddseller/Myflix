@@ -5,20 +5,22 @@ import RenderField from './RenderField'
 import validate from './validate'
 
 const LoginForm = props => {
-  const { handleSubmit } = props
+  const { handleSubmit, onSubmit } = props
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={ handleSubmit(formValues => {
+      onSubmit(formValues)
+    }) }>
       <Field
-        name="userNameEmail"
+        name="username_email"
         type="text"
-        component={RenderField}
+        component={ RenderField }
         label="User Name or Email"
       />
       <Field
         name="password"
         type="password"
-        component={RenderField}
+        component={ RenderField }
         label="Password"
       />
       <button type="submit">Login</button>

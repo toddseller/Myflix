@@ -7,6 +7,7 @@ import HomePage from '../components/HomePage'
 import Header from '../components/header/Header'
 import Login from '../components/Login'
 import Signup from '../components/Signup'
+import UserPage from '../components/UserPage'
 import Footer from '../components/Footer'
 import '../styles/base.css'
 
@@ -23,6 +24,7 @@ const AppRouter = () => {
               <Route path="/" exact component={ HomePage } />
               <Route path="/login" component={ Login } />
               <Route path="/signup" component={ Signup } />
+              <Route path="/browse/:id" component={ UserPage } />
             </Switch>
           </div>
         </div>
