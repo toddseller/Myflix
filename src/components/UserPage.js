@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import { startFetchMovies } from '../actions/userMovie'
 import sortByTitle from '../selectors/sortByTitle'
 import LoadingPage from './LoadingPage'
+import MoviePreview from './MoviePreview'
+import '../styles/movie-preview.css'
 
 class UserPage extends Component {
   componentDidMount() {
@@ -11,12 +13,19 @@ class UserPage extends Component {
   }
 
   render() {
-    if (!this.props.movies) {
-      return <LoadingPage />
+    const { movies } = this.props
+    if (!movies) {
+      return <LoadingPage/>
     }
     return (
       <div>
-        <h1 style={{color: '#ffffff'}}>Movies</h1>
+        <div className="movies-list">
+          {
+            sortByTitle(movies, 'STAR ').map(movie => {
+              return <MoviePreview key={movie.id} movie={movie}/>
+            })
+          }
+        </div>
       </div>
     )
   }

@@ -9,9 +9,7 @@ export const fetchMovies = movies => {
 }
 
 export const startFetchMovies = () => async dispatch => {
-  const response = await mmdb.get('/movies', {
-    headers: {'Authorization': "bearer " + window.localStorage.getItem('token')}
-  })
+  const response = await mmdb.get('/movies', { headers: { 'Authorization': 'bearer ' + window.localStorage.getItem('token') } })
+
   dispatch(fetchMovies(response.data))
-  // history.push(`/browse/${response.data.user.id}`)
 }

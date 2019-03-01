@@ -1,0 +1,30 @@
+.movies-list
+{
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1325px;
+  justify-content: space-between;
+  margin: 0 auto;
+  margin-top: 125px;
+}
+
+.movie-preview
+{
+  position: relative;
+  width: 174px;
+  height: 303px;
+}
+
+.truncate
+{
+  overflow: hidden;
+  width: 174px;
+  margin: 0 auto;
+  margin-top: 2px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #ffffff;
+  font-size: .9rem;
+  text-align: center;
+  font-weight: 300;
+}
