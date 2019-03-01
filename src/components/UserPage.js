@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { startFetchMovies } from '../actions/userMovie'
-import sortMovies from '../selectors/sortByTitle'
+import sortByTitle from '../selectors/sortByTitle'
 import LoadingPage from './LoadingPage'
 
 class UserPage extends Component {
@@ -16,7 +16,7 @@ class UserPage extends Component {
     }
     return (
       <div>
-        {console.log(this.props.movies)}
+        <h1 style={{color: '#ffffff'}}>Movies</h1>
       </div>
     )
   }
@@ -24,7 +24,7 @@ class UserPage extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    movies: sortMovies(Object.values(state.movies))
+    movies: sortByTitle(Object.values(state.movies))
   }
 }
 

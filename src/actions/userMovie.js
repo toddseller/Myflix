@@ -12,7 +12,6 @@ export const startFetchMovies = () => async dispatch => {
   const response = await mmdb.get('/movies', {
     headers: {'Authorization': "bearer " + window.localStorage.getItem('token')}
   })
-  // console.log(response.data)
   dispatch(fetchMovies(response.data))
   // history.push(`/browse/${response.data.user.id}`)
 }
