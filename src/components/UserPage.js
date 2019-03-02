@@ -14,15 +14,15 @@ class UserPage extends Component {
 
   render() {
     const { movies } = this.props
-    if (!movies) {
-      return <LoadingPage/>
+    if (movies.length < 1) {
+      return <LoadingPage />
     }
     return (
       <div>
         <div className="movies-list">
           {
             sortByTitle(movies,).map(movie => {
-              return <MoviePreview key={movie.id} movie={movie}/>
+              return <MoviePreview key={ movie.id } movie={ movie } />
             })
           }
         </div>
