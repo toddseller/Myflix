@@ -1,14 +1,27 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
+import { history } from '../../routers/AppRouter'
+
 import '../../styles/header.css'
 
-const Header = ({ isSignedIn }) => {
-  return (
-    <div className="header-wrapper">
-      <div className="header">
-        <Link to={ '/' }>
+class Header extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      pathName: ''
+    }
+    history.listen((location) => {
+      this.setState({pathName: location.pathname.substr(1)})
+    })
+  }
+
+  render() {
+    return (
+      <div className="header-wrapper">
+        <div className="header">
+          <Link to={ '/' }>
               <span className="svg-mfLogo header-logo">
                 <svg className="svg-icon svg-icon-myflix-logo" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
                      viewBox="0 0 443 148" style={ { fill: '#ed2517', width: '150px' } }>
@@ -26,11 +39,12 @@ const Header = ({ isSignedIn }) => {
                         d="M436.45,4.5Q425,38.2,413.68,70.26,425.9,105.89,438,143.5q-11.44-1.81-22.91-3.43Q406.31,112,397.45,85h-.4q-8.88,25.65-17.76,50.52-10.21-1.17-20.42-2.19,12.14-31.9,24.28-64.94-11.46-32.58-23-63.85h22.7q8.15,24.11,16.27,49h.39q8.26-24.09,16.55-49Z" />
                 </svg>
               </span>
-        </Link>
-        { !isSignedIn && <Link to={ '/login' } className="btn btn-red btn-right">Sign In</Link> }
+          </Link>
+          { !this.props.isSignedIn && this.state.pathName !== 'login' && <Link to={ '/login' } className="btn btn-red btn-right">Sign In</Link> }
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
 const mapStateToProps = (state) => ({

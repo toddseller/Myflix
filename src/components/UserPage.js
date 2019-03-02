@@ -21,7 +21,7 @@ class UserPage extends Component {
       <div>
         <div className="movies-list">
           {
-            sortByTitle(movies).map(movie => {
+            sortByTitle(movies,).map(movie => {
               return <MoviePreview key={movie.id} movie={movie}/>
             })
           }
