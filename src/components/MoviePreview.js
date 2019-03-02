@@ -1,11 +1,14 @@
 import React from 'react'
+import LazyLoad from 'react-lazyload'
 
 import '../styles/movie-preview.css'
 
 const MoviePreview = ({ movie }) => {
   return (
     <div className="movie-preview">
-      <img src={ movie.poster } alt={ `${ movie.title } poster` } width={174} height={261}/>
+      <LazyLoad height={261} offset={303}>
+        <img src={ movie.poster } alt={ `${ movie.title } poster` } width={174} height={261}/>
+      </LazyLoad>
       <p className="truncate">{ movie.title }</p>
     </div>
   )
