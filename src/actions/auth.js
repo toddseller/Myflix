@@ -10,7 +10,7 @@ export const login = user => {
 
 export const startLogin = formValues => async dispatch => {
   const response = await mmdb.post('/authenticate', { ...formValues })
-  window.localStorage.setItem("token", response.data.token)
+  formValues.remember ? window.localStorage.setItem("myflixUser", JSON.stringify(response.data)) : window.sessionStorage.setItem("myflixUser", JSON.stringify(response.data))
   dispatch(login(response.data.user))
   history.push(`/browse/${response.data.user.id}`)
 }

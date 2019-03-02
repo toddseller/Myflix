@@ -129,6 +129,15 @@ input:focus
   outline: 0;
 }
 
+.form-input label
+{
+  color: #b3b3b3;
+  position: relative;
+  top: -2.2rem;
+  left: 1.5rem;
+  font-size: .9rem;
+}
+
 /*.form-input input*/
 /*{*/
   /*width: calc(100% - 3em)*/

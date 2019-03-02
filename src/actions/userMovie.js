@@ -9,7 +9,8 @@ export const fetchMovies = movies => {
 }
 
 export const startFetchMovies = () => async dispatch => {
-  const response = await mmdb.get('/movies', { headers: { 'Authorization': 'bearer ' + window.localStorage.getItem('token') } })
+  const myflixUser = window.localStorage.getItem('myflixUser') ? JSON.parse(window.localStorage.getItem('myflixUser')) : JSON.parse(window.sessionStorage.getItem('myflixUser'))
+  const response = await mmdb.get('/movies', { headers: { 'Authorization': 'bearer ' + myflixUser.token } })
 
   dispatch(fetchMovies(response.data))
 }

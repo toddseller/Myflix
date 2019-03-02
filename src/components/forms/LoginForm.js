@@ -26,6 +26,12 @@ const LoginForm = props => {
           label="Password"
         />
         <button className="btn btn-red btn-login" type="submit">Sign In</button>
+        <Field
+          name="remember"
+          type="checkbox"
+          component={ RenderField }
+          label="Remember me"
+        />
       </form>
     </div>
   )

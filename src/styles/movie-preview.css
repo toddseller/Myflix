@@ -29,3 +29,13 @@
   text-align: center;
   font-weight: 300;
 }
+
+span.new::before
+{
+  content: '\2022\A0';
+  color: #e50914;
+  font-size: 1.5rem;
+  line-height: .35rem;
+  position: relative;
+  top: .2rem;
+}
