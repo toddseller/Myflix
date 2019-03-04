@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import { history } from '../../routers/AppRouter'
+import HeaderButton from './HeaderButton'
+import UserNav from './UserNav'
 
 import '../../styles/header.css'
 
@@ -13,7 +15,7 @@ class Header extends Component {
       pathName: ''
     }
     history.listen((location) => {
-      this.setState({pathName: location.pathname.substr(1)})
+      this.setState({ pathName: location.pathname.substr(1) })
     })
   }
 
@@ -40,7 +42,8 @@ class Header extends Component {
                 </svg>
               </span>
           </Link>
-          { !this.props.isSignedIn && this.state.pathName !== 'login' && <Link to={ '/login' } className="btn btn-red btn-right">Sign In</Link> }
+          { !this.props.isSignedIn && this.state.pathName !== 'login' && <HeaderButton route={ '/login' } text={ 'Sign In' } /> }
+          { this.props.isSignedIn && <UserNav /> }
         </div>
       </div>
     )

@@ -2,6 +2,7 @@ let initial_state = {}
 if (window.localStorage.getItem('myflixUser') || window.sessionStorage.getItem('myflixUser')) {
   const myflixUser = window.localStorage.getItem('myflixUser') ? JSON.parse(window.localStorage.getItem('myflixUser')) : JSON.parse(window.sessionStorage.getItem('myflixUser'))
   initial_state = {
+    avatar: myflixUser.user.avatar,
     isSignedIn: true,
     userId: myflixUser.user.id,
     firstName: myflixUser.user.firstName,
@@ -9,6 +10,7 @@ if (window.localStorage.getItem('myflixUser') || window.sessionStorage.getItem('
   }
 } else {
   initial_state = {
+    avatar: '',
     isSignedIn: null,
     userId: null,
     firstName: '',
@@ -24,7 +26,8 @@ export default (state = initial_state, action) => {
         isSignedIn: true,
         userId: action.payload.id,
         firstName: action.payload.firstName,
-        userName: action.payload.userName
+        userName: action.payload.userName,
+        avatar: action.payload.avatar
       }
     case 'LOGOUT':
       return {

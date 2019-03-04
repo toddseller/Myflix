@@ -39,3 +39,13 @@ span.new::before
   position: relative;
   top: .2rem;
 }
+
+.display-by
+{
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  top: 108px;
+  color: #ffffff;
+}

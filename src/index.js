@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import { Provider } from 'react-redux'
 
 import AppRouter from './routers/AppRouter'
@@ -9,9 +10,11 @@ import { getHomePageData } from './actions/homePage'
 
 const store = configureStore()
 const jsx = (
-  <Provider store={ store }>
-    <AppRouter />
-  </Provider>
+  <MuiThemeProvider>
+    <Provider store={ store }>
+      <AppRouter />
+    </Provider>
+  </MuiThemeProvider>
 )
 let hasRendered = false
 const renderApp = () => {
