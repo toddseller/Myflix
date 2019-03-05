@@ -23,12 +23,12 @@ class ToggleButton extends Component {
   toggleButton = e => {
     e.persist()
     e.preventDefault()
-    console.log(e)
-    const { onClick, onStateChanged } = this.props
+
+    const { onClick, onStateChanged, value } = this.props
 
     this.setState({ selected: !this.state.selected }, () => {
       const state = this.state
-      const buttonEvent = Object.assign(e, { BUTTON_STATE: state })
+      const buttonEvent = Object.assign(e, { BUTTON_STATE: state, BUTTON_VALUE: value })
 
       isFunction(onClick) && onClick(buttonEvent)
       isFunction(onStateChanged) && onStateChanged(state)
@@ -93,6 +93,7 @@ ToggleButton.propTypes = {
     PropTypes.bool,
     PropTypes.func
   ]),
+  value: PropTypes.string,
   onStateChanged: PropTypes.func
 }
 

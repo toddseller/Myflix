@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import compose from 'recompose/compose'
 import { forceCheck } from 'react-lazyload'
 import snakeCase from 'lodash/snakeCase'
+import _ from 'lodash'
 import classnames from 'classnames'
 
 import { startFetchMovies } from '../actions/userMovie'
@@ -14,33 +15,36 @@ import ToggleButton from './ToggleButton'
 
 import '../styles/movie-preview.css'
 
-const DISPLAY_FILTER = []
-
 class UserPage extends Component {
-  state = { selected: true, only: DISPLAY_FILTER.map(snakeCase) }
+  state = { library: true, unwatched: false }
 
-  toggleSelectedButton = display => ({selected}) => {
-    let { only } = this.state
+  toggleSelectedButton = e => {
+    const display = e.BUTTON_VALUE
 
-    if (selected && !only.includes(display)) {
-      only.push(display)
-      return this.setState({ only })
-    }
+    _.forEach(this.state, (value, key) => {
+      if (value) {
+        this.setState({ [key]: false })
+      }
+      if (key === display) {
+        this.setState({[key]: true})
+      }
+    })
 
-    if (!selected && only.includes(display)) {
-      only = only.filter(item => item !== display)
-      console.log(only)
-      return this.setState({ only })
+    if (display === 'unwatched') {
+      this.setDisplayUnwatched()
+    } else {
+      this.setDisplayAll()
     }
   }
 
   componentDidMount() {
     this.props.startFetchMovies()
-    return <LoadingPage />
+    return <LoadingPage/>
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     forceCheck()
+    console.log(this.state)
   }
 
   setDisplayAll = () => {
@@ -53,9 +57,9 @@ class UserPage extends Component {
 
   render() {
     const { movies } = this.props
-    const { selected } = this.state
+    const { library, unwatched } = this.state
     if (movies.length < 1) {
-      return <LoadingPage />
+      return <LoadingPage/>
     }
     return (
       <div>
@@ -68,16 +72,17 @@ class UserPage extends Component {
           {/*</div>*/ }
           <ToggleButton
             className="display-all"
-            selected={ selected }
-            onStateChanged={ this.toggleSelectedButton(snakeCase('Library')) }
-            onClick={ this.setDisplayAll }
+            selected={ library }
+            value={ 'library' }
+            onClick={ this.toggleSelectedButton }
           >
             Library
           </ToggleButton>
           <ToggleButton
             className="display-unwatched"
-            onStateChanged={ this.toggleSelectedButton(snakeCase('Unwatched')) }
-            onClick={ this.setDisplayUnwatched }
+            selected={ unwatched }
+            value={ 'unwatched' }
+            onClick={ this.toggleSelectedButton }
           >
             Unwatched
           </ToggleButton>
@@ -85,7 +90,7 @@ class UserPage extends Component {
         <div className="movies-list">
           {
             movies.map(movie => {
-              return <MoviePreview key={ movie.id } id={ movie.id } />
+              return <MoviePreview key={ movie.id } id={ movie.id }/>
             })
           }
         </div>
@@ -106,7 +111,7 @@ const composedUserPage = compose(
     setTextFilter,
     setDisplayAll,
     setDisplayUnwatched
-  }),
+  })
 )
 
 export default composedUserPage(UserPage)
