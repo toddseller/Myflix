@@ -25,63 +25,79 @@ class UserPage extends Component {
       if (value) {
         this.setState({ [key]: false })
       }
+
       if (key === display) {
-        this.setState({[key]: true})
+        this.setState({ [key]: true })
       }
     })
 
     if (display === 'unwatched') {
-      this.setDisplayUnwatched()
+      this.props.setDisplayUnwatched()
     } else {
-      this.setDisplayAll()
+      this.props.setDisplayAll()
     }
   }
 
   componentDidMount() {
     this.props.startFetchMovies()
-    return <LoadingPage/>
+    return <LoadingPage />
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     forceCheck()
-    console.log(this.state)
-  }
-
-  setDisplayAll = () => {
-    this.props.setDisplayAll()
-  }
-
-  setDisplayUnwatched = () => {
-    this.props.setDisplayUnwatched()
   }
 
   render() {
+    const borderStyles = {
+      deselected: {
+        borderTop: 'none #e50914',
+        borderLeft: 'none #e50914',
+        borderRight: 'none #e50914',
+        borderBottom: 'solid 2px #e50914',
+        bottom: '-3px',
+        boxSizing: 'content-box',
+        margin: '0 auto',
+        position: 'relative',
+        width: 'calc(100% - 1.5rem)',
+        transform: 'scaleX(0)',
+        transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+      },
+      selected: {
+        borderTop: 'none #e50914',
+        borderLeft: 'none #e50914',
+        borderRight: 'none #e50914',
+        borderBottom: 'solid 2px #e50914',
+        bottom: '-3px',
+        boxSizing: 'content-box',
+        margin: '0 auto',
+        position: 'relative',
+        width: 'calc(100% - 1.5rem)',
+        transform: 'scaleX(1)',
+        transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+      }
+    }
+
     const { movies } = this.props
     const { library, unwatched } = this.state
     if (movies.length < 1) {
-      return <LoadingPage/>
+      return <LoadingPage />
     }
     return (
       <div>
         <div className='display-by'>
-          {/*<div className="display-all" onClick={ this.setDisplayAll }>*/ }
-          {/*Library*/ }
-          {/*</div>*/ }
-          {/*<div className="display-unwatched" onClick={ this.setDisplayUnwatched }>*/ }
-          {/*Unwatched*/ }
-          {/*</div>*/ }
           <ToggleButton
             className="display-all"
             selected={ library }
             value={ 'library' }
+            style ={ library ? borderStyles.selected : borderStyles.deselected }
             onClick={ this.toggleSelectedButton }
           >
             Library
           </ToggleButton>
           <ToggleButton
             className="display-unwatched"
-            selected={ unwatched }
             value={ 'unwatched' }
+            style ={ unwatched ? borderStyles.selected : borderStyles.deselected }
             onClick={ this.toggleSelectedButton }
           >
             Unwatched
@@ -90,7 +106,7 @@ class UserPage extends Component {
         <div className="movies-list">
           {
             movies.map(movie => {
-              return <MoviePreview key={ movie.id } id={ movie.id }/>
+              return <MoviePreview key={ movie.id } id={ movie.id } />
             })
           }
         </div>

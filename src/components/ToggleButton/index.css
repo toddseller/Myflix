@@ -3,6 +3,7 @@
   color: #ffffff;
   margin: 0 .75rem;
   text-transform: uppercase;
+  cursor: default;
 }
 
 .button--deselected hr
