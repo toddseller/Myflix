@@ -57,14 +57,14 @@ class HomePage extends Component {
     const className = `homepage-gallery-panel ${ type }`
     return (
       <div className="homepage-gallery">
-        <div className={ className }>
-          {
-            items.map(item => {
-              return <HomePageList key={ item.id } item={ item } type={ type } />
-            })
-          }
-        </div>
-      </div>
+      <div className={ className }>
+      {
+        items.map(item => {
+          return <HomePageList key={ item.id } item={ item } type={ type } />
+        })
+      }
+  </div>
+  </div>
     )
   }
 

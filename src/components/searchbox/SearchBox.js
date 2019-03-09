@@ -1,76 +1,126 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {TextField, IconButton} from 'material-ui'
+import { TextField, IconButton } from 'material-ui'
 import SearchIcon from 'material-ui/svg-icons/action/search'
+import AddIcon from 'material-ui/svg-icons/content/add'
 
 import { setTextFilter } from '../../actions/filters'
+import validate from '../forms/validate'
+import { startFetchSearchNewMovies } from '../../actions/newMovie'
 
-const SearchBox = ({ isOpen, onClick, additionalStyles, setTextFilter, filters, classes }) => {
-  const _onClick = () => {
-    onClick();
-    setTextFilter('');
+const baseStyles = {
+  box: {
+    display: 'inline-flex'
+  },
+  open: {
+    width: 300,
+    frame: {
+      background: 'transparent'
+    }
+  },
+  closed: {
+    width: 0,
+    frame: {
+      background: 'transparent'
+    }
+  },
+  smallIcon: {
+    width: 30,
+    height: 30,
+    color: '#ffffff'
+  },
+  icon: {
+    width: 40,
+    height: 40,
+    padding: 5,
+    top: 10,
+    color: '#ffffff'
+  },
+  addIconOpen: {
+    transform: 'scaleX(1)',
+    transition: 'all 750ms cubic-bezier(0.23, 1, 0.32, 1) 100ms'
+  },
+  addIconClosed: {
+    transform: 'scaleX(0)',
+    transition: 'all 750ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
   }
-  const baseStyles = {
-    open: {
-      width: 300,
-      frame: {
-        background: 'transparent',
-      },
-    },
-    closed: {
-      width: 0,
-      frame: {
-        background: 'transparent',
-      },
-    },
-    smallIcon: {
-      width: 30,
-      height: 30,
-      color: '#ffffff'
-    },
-    icon: {
-      width: 40,
-      height: 40,
-      padding: 5,
-      top: 10,
-      color: '#ffffff'
-    },
+}
+
+const inputStyle = {
+  color: '#ffffff',
+  fontFamily: 'Helvetica Nueue, Helvetica, sans-serif',
+  fontWeight: 300,
+  border: 'none'
+}
+
+const animationStyle = {
+  transition: 'all 0.75s cubic-bezier(0.000, 0.795, 0.000, 1.000)'
+}
+
+class SearchBox extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      value: '',
+      isOpen: false
+    }
   }
 
-  const inputStyle = {
-    color: '#ffffff',
-    fontFamily: 'Helvetica Nueue, Helvetica, sans-serif',
-    fontWeight: 300,
-    border: 'none'
+  handleOnChange = e => {
+    this.setState({ value: e.target.value })
+    this.props.setTextFilter(this.state.value)
   }
 
-  let textStyle = isOpen ? Object.assign({}, baseStyles.open, baseStyles.open.frame) : Object.assign({}, baseStyles.closed, baseStyles.closed.frame)
-  textStyle = Object.assign(textStyle, additionalStyles ? additionalStyles.text : {})
-  const divStyle = isOpen ? Object.assign({}, textStyle, baseStyles.open.frame, additionalStyles ? additionalStyles.frame : {}) : Object.assign({}, textStyle, baseStyles.closed.frame, additionalStyles ? additionalStyles.frame : {})
-  divStyle.width += baseStyles.icon.width + 5
-  return (
-    <div style={ divStyle }>
-      <IconButton
-        iconStyle={ baseStyles.smallIcon }
-        style={ baseStyles.icon }
-        onClick={ _onClick }
-      >
-        <SearchIcon />
-      </IconButton>
-      <TextField
-        name='search'
-        value={ filters.text }
-        onChange={ e => setTextFilter(e.target.value) }
-        style={ textStyle }
-        autoComplete='off'
-        inputStyle={ inputStyle }
-      />
-    </div>
-  )
+  onClick = () => {
+    this.setState({ isOpen: !this.state.isOpen })
+    setTextFilter('')
+  }
+
+  handleOnSubmit = () => {
+    this.props.startFetchSearchNewMovies(this.state.value)
+  }
+
+  render() {
+    const { value, isOpen } = this.state
+    const { onClick, handleOnChange, handleOnSubmit } = this
+    let textStyle = isOpen ? Object.assign({}, baseStyles.open, baseStyles.open.frame) : Object.assign({}, baseStyles.closed, baseStyles.closed.frame)
+    textStyle = Object.assign(textStyle, animationStyle ? animationStyle : {})
+    const divStyle = isOpen ? Object.assign({}, textStyle, baseStyles.open.frame, baseStyles.box, animationStyle ? animationStyle : {}) : Object.assign({}, textStyle, baseStyles.closed.frame, baseStyles.box, animationStyle ? animationStyle : {})
+    divStyle.width += baseStyles.icon.width + 5
+    const addStyle = isOpen ? Object.assign({}, baseStyles.icon, baseStyles.addIconOpen) : Object.assign({}, baseStyles.icon, baseStyles.addIconClosed)
+
+    return (
+      <div style={ divStyle }>
+        <IconButton
+          iconStyle={ baseStyles.smallIcon }
+          style={ baseStyles.icon }
+          onClick={ onClick }
+        >
+          <SearchIcon/>
+        </IconButton>
+        <TextField
+          name='search'
+          value={ value }
+          onChange={ handleOnChange }
+          style={ textStyle }
+          autoComplete='off'
+          inputStyle={ inputStyle }
+        />
+        <IconButton
+          iconStyle={ baseStyles.smallIcon }
+          style={ addStyle }
+          onClick={ handleOnSubmit }
+        >
+          <AddIcon/>
+        </IconButton>
+      </div>
+    )
+  }
 }
 
 const mapStateToProps = state => ({
   filters: state.filters
 })
 
-export default  connect(mapStateToProps, { setTextFilter })(SearchBox)
+export default connect(mapStateToProps, { setTextFilter, startFetchSearchNewMovies })(SearchBox)

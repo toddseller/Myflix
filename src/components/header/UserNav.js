@@ -4,9 +4,7 @@ import { connect } from 'react-redux'
 
 // import { setTextFilter } from '../../actions/filters'
 import SearchBox from '../searchbox/SearchBox'
-import makeExanding from '../searchbox/makeExpanding'
 
-const ExpandingSearchBox = makeExanding(SearchBox)
 
 class UserNav extends Component {
 
@@ -16,7 +14,7 @@ class UserNav extends Component {
     return (
       <div className="user-nav">
         <div className="search-bar">
-          <ExpandingSearchBox />
+          <SearchBox />
         </div>
         <div className="avatar">
           <Link to={ `/browse/${ user.userId }` }>

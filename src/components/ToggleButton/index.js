@@ -36,34 +36,6 @@ class ToggleButton extends Component {
   }
 
   render() {
-    // const borderStyles = {
-    //   deselected: {
-    //     borderTop: 'none #e50914',
-    //     borderLeft: 'none #e50914',
-    //     borderRight: 'none #e50914',
-    //     borderBottom: 'solid 3px #e50914',
-    //     bottom: '-5px',
-    //     boxSizing: 'content-box',
-    //     margin: '0 auto',
-    //     position: 'relative',
-    //     width: 'calc(100% - 1.5rem)',
-    //     transform: 'scaleX(0)',
-    //     transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
-    //   },
-    //   selected: {
-    //     borderTop: 'none #e50914',
-    //     borderLeft: 'none #e50914',
-    //     borderRight: 'none #e50914',
-    //     borderBottom: 'solid 3px #e50914',
-    //     bottom: '-5px',
-    //     boxSizing: 'content-box',
-    //     margin: '0 auto',
-    //     position: 'relative',
-    //     width: 'calc(100% - 1.5rem)',
-    //     transform: 'scaleX(1)',
-    //     transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
-    //   }
-    // }
     const { selected } = this.state
     const { selected: _selected, theme, onClick, className, onStateChanged, style, ...restProps } = this.props
     const buttonTheme = (theme && isString(theme)) ? theme : 'default'
@@ -71,10 +43,6 @@ class ToggleButton extends Component {
       `button button--${ buttonTheme }`,
       className
     )
-    // let borderBottomStyles = selected ? borderStyles.selected : borderStyles.deselected
-    // const borderClasses = classnames(
-    //   `button--${ selected ? 'selected' : 'deselected' }`,
-    // )
 
     return (
       <div>

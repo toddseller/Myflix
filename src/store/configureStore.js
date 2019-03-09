@@ -6,6 +6,7 @@ import authReducer from '../reducers/authReducer'
 import homePageReducer from '../reducers/homePageReducer'
 import userMovieReducer from '../reducers/userMovieReducer'
 import filtersReducer from '../reducers/filtersReducer'
+import newMovieReducer from '../reducers/newMovieReducer'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -15,6 +16,7 @@ export default () => {
       auth: authReducer,
       home: homePageReducer,
       movies: userMovieReducer,
+      newMovies: newMovieReducer,
       filters: filtersReducer,
       form: formReducer
     }),
