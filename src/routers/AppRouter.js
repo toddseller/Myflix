@@ -29,7 +29,6 @@ const AppRouter = () => {
           </div>
         </div>
       </Router>
-      <Footer />
     </div>
   )
 }

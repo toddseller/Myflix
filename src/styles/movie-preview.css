@@ -116,3 +116,17 @@ hr:nth-of-type(2)
   margin: 40px auto 0;
 }
 
+.movie-count
+{
+  position: fixed;
+  bottom: 0;
+  height: 25px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: .8rem;
+  font-weight: 300;
+  background: #000000;
+}
