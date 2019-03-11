@@ -1,0 +1,21 @@
+.new-movie-preview
+{
+  color: #ffffff;
+}
+
+.preview
+{
+  margin: 0 .75rem;
+}
+
+.preview > p.truncate
+{
+  text-align: left;
+}
+
+.preview > p.year
+{
+  font-size: .9rem;
+  font-weight: 300;
+  margin: 0;
+}

@@ -13,9 +13,6 @@ class UserNav extends Component {
 
     return (
       <div className="user-nav">
-        <div className="search-bar">
-          <SearchBox />
-        </div>
         <div className="avatar">
           <Link to={ `/browse/${ user.userId }` }>
             <img src={ user.avatar } alt={ `${ user.userName } avatar` } width={ 40 } />

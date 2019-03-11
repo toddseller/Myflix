@@ -12,11 +12,43 @@ import FilteredMoviesSelector from '../selectors/filteredMovies'
 import LoadingPage from './LoadingPage'
 import MoviePreview from './MoviePreview'
 import ToggleButton from './ToggleButton'
+import SearchBox from './searchbox/SearchBox'
+import NewMoviePreview from './NewMoviePreview'
 
 import '../styles/movie-preview.css'
+import LoadingSpinner from './LoadingSpinner'
+
+const borderStyles = {
+  deselected: {
+    borderTop: 'none #e50914',
+    borderLeft: 'none #e50914',
+    borderRight: 'none #e50914',
+    borderBottom: 'solid 2px #e50914',
+    bottom: '-3px',
+    boxSizing: 'content-box',
+    margin: '0 auto',
+    position: 'relative',
+    width: 'calc(100% - 1.5rem)',
+    transform: 'scaleX(0)',
+    transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+  },
+  selected: {
+    borderTop: 'none #e50914',
+    borderLeft: 'none #e50914',
+    borderRight: 'none #e50914',
+    borderBottom: 'solid 2px #e50914',
+    bottom: '-3px',
+    boxSizing: 'content-box',
+    margin: '0 auto',
+    position: 'relative',
+    width: 'calc(100% - 1.5rem)',
+    transform: 'scaleX(1)',
+    transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+  }
+}
 
 class UserPage extends Component {
-  state = { library: true, unwatched: false }
+  state = { library: true, unwatched: false, isSearching: false, isLoading: true }
 
   toggleSelectedButton = e => {
     const display = e.BUTTON_VALUE
@@ -38,6 +70,18 @@ class UserPage extends Component {
     }
   }
 
+  onClick = () => {
+    this.setState(prevState => {
+      return { isSearching: !prevState.isSearching }
+    })
+  }
+
+  toggleIsLoading = () => {
+    this.setState(prevState => {
+      return { isLoading: !prevState.isLoading }
+    })
+  }
+
   componentDidMount() {
     this.props.startFetchMovies()
     return <LoadingPage />
@@ -48,48 +92,37 @@ class UserPage extends Component {
   }
 
   render() {
-    const borderStyles = {
-      deselected: {
-        borderTop: 'none #e50914',
-        borderLeft: 'none #e50914',
-        borderRight: 'none #e50914',
-        borderBottom: 'solid 2px #e50914',
-        bottom: '-3px',
-        boxSizing: 'content-box',
-        margin: '0 auto',
-        position: 'relative',
-        width: 'calc(100% - 1.5rem)',
-        transform: 'scaleX(0)',
-        transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
-      },
-      selected: {
-        borderTop: 'none #e50914',
-        borderLeft: 'none #e50914',
-        borderRight: 'none #e50914',
-        borderBottom: 'solid 2px #e50914',
-        bottom: '-3px',
-        boxSizing: 'content-box',
-        margin: '0 auto',
-        position: 'relative',
-        width: 'calc(100% - 1.5rem)',
-        transform: 'scaleX(1)',
-        transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
-      }
-    }
-
-    const { movies } = this.props
-    const { library, unwatched } = this.state
-    if (movies.length < 1) {
+    const { movies, newMovies } = this.props
+    const { library, unwatched, isSearching, isLoading } = this.state
+    const previewClases = classnames(
+      'new-preview',
+      `new-preview--${ isSearching ? 'active' : 'deactive' }`
+    )
+    if (movies.length < 1 && isLoading) {
       return <LoadingPage />
     }
     return (
       <div>
+        <div className="search-bar">
+          <SearchBox onClick={ this.onClick } isLoading={ this.toggleIsLoading } />
+        </div>
+        <div className={ previewClases }>
+          { newMovies.length === 0 && isSearching &&
+          <div className="searching-spinner">
+            <h1>Searching our database&#8230;</h1>
+            <LoadingSpinner />
+          </div>
+          }
+          { newMovies.map((movie, index) => {
+            return <NewMoviePreview key={ index } movie={ movie } onClick={ this.onClick } />
+          }) }
+        </div>
         <div className='display-by'>
           <ToggleButton
             className="display-all"
             selected={ library }
             value={ 'library' }
-            style ={ library ? borderStyles.selected : borderStyles.deselected }
+            style={ library ? borderStyles.selected : borderStyles.deselected }
             onClick={ this.toggleSelectedButton }
           >
             Library
@@ -97,7 +130,7 @@ class UserPage extends Component {
           <ToggleButton
             className="display-unwatched"
             value={ 'unwatched' }
-            style ={ unwatched ? borderStyles.selected : borderStyles.deselected }
+            style={ unwatched ? borderStyles.selected : borderStyles.deselected }
             onClick={ this.toggleSelectedButton }
           >
             Unwatched
@@ -117,7 +150,8 @@ class UserPage extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    movies: FilteredMoviesSelector(state)
+    movies: FilteredMoviesSelector(state),
+    newMovies: Object.values(state.new)
   }
 }
 

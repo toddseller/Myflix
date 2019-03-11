@@ -7,11 +7,8 @@ export default (state = {}, action) => {
         ...state,
         ..._.mapKeys(action.payload, 'id')
       }
-    case 'FETCH_SEARCH_NEW_MOVIES':
-      return {
-        ...state,
-        ...action.payload
-      }
+    case 'ADD_MOVIE':
+      return { ...state, [action.payload.id]: action.payload }
     default:
       return state
   }

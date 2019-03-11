@@ -6,7 +6,7 @@ import AddIcon from 'material-ui/svg-icons/content/add'
 
 import { setTextFilter } from '../../actions/filters'
 import validate from '../forms/validate'
-import { startFetchSearchNewMovies } from '../../actions/newMovie'
+import { startFetchSearchNewMovies, clearSearchNewMovies } from '../../actions/newMovie'
 
 const baseStyles = {
   box: {
@@ -69,27 +69,35 @@ class SearchBox extends Component {
 
   handleOnChange = e => {
     this.setState({ value: e.target.value })
-    this.props.setTextFilter(this.state.value)
+    this.props.setTextFilter(e.target.value)
   }
 
   onClick = () => {
     this.setState({ isOpen: !this.state.isOpen })
-    setTextFilter('')
+    this.props.isLoading()
+    this.props.setTextFilter('')
+    this.props.clearSearchNewMovies()
+    this.setState({value: ''})
+    if (this.props.newMovies.length > 1) {
+      this.props.onClick()
+    }
   }
 
   handleOnSubmit = () => {
+    this.props.clearSearchNewMovies()
+    this.props.onClick()
     this.props.startFetchSearchNewMovies(this.state.value)
   }
 
   render() {
-    const { value, isOpen } = this.state
+    const { isOpen } = this.state
+    const { text } = this.props.filters
     const { onClick, handleOnChange, handleOnSubmit } = this
     let textStyle = isOpen ? Object.assign({}, baseStyles.open, baseStyles.open.frame) : Object.assign({}, baseStyles.closed, baseStyles.closed.frame)
     textStyle = Object.assign(textStyle, animationStyle ? animationStyle : {})
     const divStyle = isOpen ? Object.assign({}, textStyle, baseStyles.open.frame, baseStyles.box, animationStyle ? animationStyle : {}) : Object.assign({}, textStyle, baseStyles.closed.frame, baseStyles.box, animationStyle ? animationStyle : {})
     divStyle.width += baseStyles.icon.width + 5
     const addStyle = isOpen ? Object.assign({}, baseStyles.icon, baseStyles.addIconOpen) : Object.assign({}, baseStyles.icon, baseStyles.addIconClosed)
-
     return (
       <div style={ divStyle }>
         <IconButton
@@ -101,7 +109,7 @@ class SearchBox extends Component {
         </IconButton>
         <TextField
           name='search'
-          value={ value }
+          value={ text }
           onChange={ handleOnChange }
           style={ textStyle }
           autoComplete='off'
@@ -120,7 +128,8 @@ class SearchBox extends Component {
 }
 
 const mapStateToProps = state => ({
-  filters: state.filters
+  filters: state.filters,
+  newMovies: Object.values(state.new)
 })
 
-export default connect(mapStateToProps, { setTextFilter, startFetchSearchNewMovies })(SearchBox)
+export default connect(mapStateToProps, { setTextFilter, startFetchSearchNewMovies, clearSearchNewMovies })(SearchBox)

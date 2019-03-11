@@ -10,7 +10,7 @@ const MoviePreview = ({ movie }) => {
       <LazyLoad height={ 261 } offset={ [261, 261] } resize={ true } once>
         <img src={ movie.poster } alt={ `${ movie.title } poster` } width={ 174 } height={ 261 } />
       </LazyLoad>
-      <p className="truncate">{ movie.isNew && <span className="new"></span> }{ movie.title }</p>
+      <p className="truncate">{ movie.isnew && <span className="new"></span> }{ movie.title }</p>
     </div>
   )
 }

@@ -7,7 +7,7 @@ const titleSelector = state => state.filters
 const getMovies = (movies, filters) => {
   const filteredMovies = _.filter(
     movies,
-    movie => filters.display === 'isNew' ? movie.search_name.includes(filters.text.toLowerCase()) && movie.isNew : movie.search_name.includes(filters.text.toLowerCase())
+    movie => filters.display === 'isnew' ? movie.search_name.includes(filters.text.toLowerCase()) && movie.isnew : movie.search_name.includes(filters.text.toLowerCase())
   )
   return _.orderBy(filteredMovies, ['sort_name', 'year'], ['asc', 'asc'])
 }

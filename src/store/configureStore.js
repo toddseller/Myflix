@@ -16,7 +16,7 @@ export default () => {
       auth: authReducer,
       home: homePageReducer,
       movies: userMovieReducer,
-      newMovies: newMovieReducer,
+      new: newMovieReducer,
       filters: filtersReducer,
       form: formReducer
     }),

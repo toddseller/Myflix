@@ -6,7 +6,7 @@
   justify-content: center;
   max-width: 1560px;
   margin: 0 auto;
-  margin-top: 125px;
+  margin-top: 25px;
 }
 
 .movie-preview
@@ -46,6 +46,66 @@ span.new::before
   justify-content: center;
   position: relative;
   z-index: 2;
-  top: 108px;
+  /*top: 108px;*/
   color: #ffffff;
 }
+
+hr:nth-of-type(2)
+{
+  border-bottom: 2px solid rgb(229,9,20) !important;
+}
+
+.search-bar
+{
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: flex-end;
+  width: calc(100vw - 6.5rem - 40px);
+  align-items: center;
+  height: 108px;
+}
+
+.new-preview
+{
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-preview--deactive
+{
+  height: 0;
+  color: transparent;
+  transition: all 400ms linear;
+}
+
+.new-preview--active
+{
+  height: 350px;
+  transition: all 400ms linear;
+  color: #ffffff;
+}
+
+.searching-spinner
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.searching-spinner h1
+{
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+.searching-spinner .sk-circle
+{
+  margin: 40px auto 0;
+}
+
