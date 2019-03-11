@@ -6,7 +6,7 @@ import snakeCase from 'lodash/snakeCase'
 import _ from 'lodash'
 import classnames from 'classnames'
 
-import { startFetchMovies } from '../actions/userMovie'
+import { startFetchMovies, startFetchMovie } from '../actions/userMovie'
 import { setTextFilter, setDisplayAll, setDisplayUnwatched } from '../actions/filters'
 import FilteredMoviesSelector from '../selectors/filteredMovies'
 import LoadingPage from './LoadingPage'
@@ -76,6 +76,10 @@ class UserPage extends Component {
     })
   }
 
+  fetchMovieData = id => {
+    console.log(this.props.startFetchMovie(id))
+  }
+
   toggleIsLoading = () => {
     this.setState(prevState => {
       return { isLoading: !prevState.isLoading }
@@ -139,11 +143,11 @@ class UserPage extends Component {
         <div className="movies-list">
           {
             movies.map(movie => {
-              return <MoviePreview key={ movie.id } id={ movie.id } />
+              return <MoviePreview key={ movie.id } id={ movie.id } onClick={ this.fetchMovieData } />
             })
           }
         </div>
-        <div className="movie-count">{`${movies.length} ${movies.length !== 1 ? 'movies' : 'movie'}`}</div>
+        <div className="movie-count">{ `${ movies.length } ${ movies.length !== 1 ? 'movies' : 'movie' }` }</div>
       </div>
     )
   }
@@ -159,6 +163,7 @@ const mapStateToProps = (state) => {
 const composedUserPage = compose(
   connect(mapStateToProps, {
     startFetchMovies,
+    startFetchMovie,
     setTextFilter,
     setDisplayAll,
     setDisplayUnwatched
