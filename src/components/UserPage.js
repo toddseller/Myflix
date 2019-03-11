@@ -106,17 +106,6 @@ class UserPage extends Component {
         <div className="search-bar">
           <SearchBox onClick={ this.onClick } isLoading={ this.toggleIsLoading } />
         </div>
-        <div className={ previewClases }>
-          { newMovies.length === 0 && isSearching &&
-          <div className="searching-spinner">
-            <h1>Searching our database&#8230;</h1>
-            <LoadingSpinner />
-          </div>
-          }
-          { newMovies.map((movie, index) => {
-            return <NewMoviePreview key={ index } movie={ movie } onClick={ this.onClick } />
-          }) }
-        </div>
         <div className='display-by'>
           <ToggleButton
             className="display-all"
@@ -135,6 +124,17 @@ class UserPage extends Component {
           >
             Unwatched
           </ToggleButton>
+        </div>
+        <div className={ previewClases }>
+          { newMovies.length === 0 && isSearching &&
+          <div className="searching-spinner">
+            <h1>Searching our database&#8230;</h1>
+            <LoadingSpinner />
+          </div>
+          }
+          { newMovies.map((movie, index) => {
+            return <NewMoviePreview key={ index } movie={ movie } onClick={ this.onClick } />
+          }) }
         </div>
         <div className="movies-list">
           {
