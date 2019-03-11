@@ -62,11 +62,10 @@ hr:nth-of-type(2)
 .search-bar
 {
   position: fixed;
-  right: 8rem;
+  right: 15vw;
   z-index: 3;
   display: flex;
   justify-content: flex-end;
-  width: 350px;
   align-items: center;
   height: 108px;
 }
