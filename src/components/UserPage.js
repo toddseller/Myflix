@@ -143,7 +143,7 @@ class UserPage extends Component {
             })
           }
         </div>
-        <div className="movie-count">{`${movies.length} ${movies.length > 1 ? 'movies' : 'movie'}`}</div>
+        <div className="movie-count">{`${movies.length} ${movies.length !== 1 ? 'movies' : 'movie'}`}</div>
       </div>
     )
   }
