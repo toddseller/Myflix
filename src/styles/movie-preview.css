@@ -62,7 +62,7 @@ hr:nth-of-type(2)
 .search-bar
 {
   position: fixed;
-  z-index: 4;
+  z-index: 3;
   display: flex;
   justify-content: flex-end;
   width: calc(100vw - 6.5rem - 40px);
