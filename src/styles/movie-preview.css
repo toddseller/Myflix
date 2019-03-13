@@ -62,7 +62,7 @@ hr:nth-of-type(2)
 .search-bar
 {
   position: fixed;
-  right: 8rem;
+  right: 15vw;
   z-index: 3;
   display: flex;
   justify-content: flex-end;
@@ -129,4 +129,12 @@ hr:nth-of-type(2)
   font-size: .8rem;
   font-weight: 300;
   background: #000000;
+}
+
+@media screen
+and (min-device-width: 1200px)
+and (max-device-width: 1600px) {
+  .search-bar {
+    right: 8vw;
+  }
 }

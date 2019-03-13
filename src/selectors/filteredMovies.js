@@ -9,7 +9,7 @@ const getMovies = (movies, filters) => {
     movies,
     movie => filters.display === 'isNew' ? movie.search_name.includes(filters.text.toLowerCase()) && movie.isnew : movie.search_name.includes(filters.text.toLowerCase())
   )
-  return _.orderBy(filteredMovies, [movie => movie.sort_name.toLowerCase(), 'year'], ['asc', 'asc'])
+  return _.orderBy(filteredMovies, ['sort_name', 'year'], ['asc', 'asc'])
 }
 
 export default createSelector(
