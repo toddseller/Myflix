@@ -5,7 +5,7 @@
   width: 100vw;
   z-index: 3;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   height: 108px;
 }
