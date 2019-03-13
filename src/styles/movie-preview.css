@@ -4,7 +4,7 @@
   grid-gap: .5rem 2rem;
   grid-template-columns: repeat(auto-fit, 174px);
   justify-content: center;
-  max-width: 1560px;
+  max-width: 1920px;
   margin: 0 auto;
   margin-top: 140px;
 }
@@ -135,6 +135,10 @@ hr:nth-of-type(2)
 and (min-device-width: 1200px)
 and (max-device-width: 1680px)
 and (-webkit-min-device-pixel-ratio: 1) {
+  .movies-list
+  {
+    max-width: 1560px;
+  }
   .search-bar
   {
     right: 9.4vw;
@@ -147,6 +151,10 @@ and (min-device-width: 1200px)
 and (max-device-width: 1680px)
 and (-webkit-min-device-pixel-ratio: 2)
 and (min-resolution: 192dpi) {
+  .movies-list
+  {
+    max-width: 1560px;
+  }
   .search-bar
   {
     right: 9.4vw;
