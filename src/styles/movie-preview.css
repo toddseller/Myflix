@@ -137,7 +137,7 @@ and (max-device-width: 1680px)
 and (-webkit-min-device-pixel-ratio: 1) {
   .search-bar
   {
-    right: 8vw;
+    right: 9.4vw;
   }
 }
 
@@ -149,6 +149,6 @@ and (-webkit-min-device-pixel-ratio: 2)
 and (min-resolution: 192dpi) {
   .search-bar
   {
-    right: 8vw;
+    right: 9.4vw;
   }
 }
