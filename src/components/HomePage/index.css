@@ -1,0 +1,236 @@
+.homepage-container:before
+{
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  content: '';
+  opacity: 1;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#000), color-stop(15%, transparent));
+  background-image: linear-gradient(to bottom, #000, transparent 15%);
+}
+
+.homepage-container:after
+{
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: -100px;
+  left: 0;
+  content: '';
+  opacity: 1;
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(15%, #000), to(transparent));
+  background-image: linear-gradient(to top, #000 15%, transparent);
+}
+
+.hero-card
+{
+  height: 90vh;
+  display: flex;
+  align-items: center;
+}
+
+.homepage-cards
+{
+  width: 100vw;
+  margin: 0 auto;
+  position: relative;
+  margin-top: 0;
+  z-index: 2;
+  background: #000000;
+  padding-top: 30px;
+}
+
+.homepage-cards-nav
+{
+  position: relative;
+  z-index: 2;
+  font-size: 1.5rem;
+  max-width: 1240px;
+  display: flex;
+  justify-content: space-evenly;
+  margin: 0 auto 20px auto;
+}
+
+.homepage-cards-nav-element
+{
+  cursor: pointer;
+  color: #8c8c8c;
+  transition: all 0.15s ease-in-out;
+}
+
+.homepage-cards-nav-element.active
+{
+  color: #ffffff;
+  transition: all 0.15s ease-in-out;
+}
+
+.homepage-cards-nav-element.active:after
+{
+  content: '';
+  display: block;
+  margin-top: 6px;
+  border-bottom: 4px solid #e50914;
+}
+
+.hero-card-background
+{
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-image: url("https://cdn.myflix.stream/images/background_small.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+.hero-card-text
+{
+  position: relative;
+  width: 100%;
+  padding: 75px 0;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+  z-index: 2;
+  color: #ffffff;
+}
+
+.hero-card-title
+{
+  font-size: 1.75rem;
+  line-height: 1.1;
+  margin-bottom: .5rem;
+}
+
+.hero-card-subtitle
+{
+  font-weight: 400;
+  font-size: 1.625rem;
+  margin: 1rem 0;
+  margin-bottom: 2.5rem;
+}
+
+.homepage-gallery
+{
+  max-width: 1240px;
+  margin: 0 auto 20px auto;
+}
+
+.homepage-gallery-panel
+{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 0 60px;
+}
+
+.homepage-gallery-panel.show,
+.homepage-gallery-panel.top-users
+{
+  height: 638px;
+  align-content: flex-start;
+}
+
+img.movie
+{
+  width: 200px;
+  height: 287px;
+  margin-bottom: 2rem;
+}
+
+img.show
+{
+  width: 200px;
+  height: 200px;
+  margin-bottom: 2rem;
+}
+
+.slide-enter
+{
+  right: 50vw;
+}
+
+.slide-enter.actve
+{
+  right: 0;
+  transition: .5s ease-in all;
+}
+
+.cta-chevron
+{
+  width: .9rem;
+  height: 1.2rem;
+  margin-top: 3px;
+  position: absolute;
+  padding: 0 .5rem;
+}
+
+.top-users
+{
+  color: #ffffff;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.top-user-card
+{
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.top-user-avatar
+{
+  width: 100px;
+  text-align: center;
+}
+
+.top-user-avatar img
+{
+  width: 100px;
+}
+
+.top-user-counts
+{
+  width: 185px;
+  font-size: 1.2rem;
+}
+
+.top-user-counts-user
+{
+  color: #e50914;
+  font-weight: 600;
+}
+
+.top-user-counts div
+{
+  margin: 5px 0;
+}
+
+@media (min-width: 1200px)
+{
+  .hero-card-background
+  {
+    position: absolute;
+    top: 0;
+    background-image: url("https://cdn.myflix.stream/images/main_background.jpg");
+  }
+  .homepage-container:after
+  {
+    opacity: .925;
+    background-image: -webkit-gradient(linear, left top, right top, color-stop(5%, #000), to(transparent));
+    background-image: linear-gradient(to right, #000 5%, transparent);
+  }
+  .hero-card-title
+  {
+    font-size: 4rem;
+  }
+}

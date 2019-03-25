@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import HomePageList from './HomePageList'
-import TopUserList from './TopUserList'
-import { getHomePageData } from '../actions/homePage'
-import '../styles/base.css'
-import '../styles/homepage.css'
+import HomePageList from '../HomePageList'
+import TopUserList from '../TopUserList'
+import { getHomePageData } from '../../actions/homePage'
+import '../../styles/base.css'
+import './index.css'
 
 class HomePage extends Component {
   constructor(props) {
@@ -57,14 +57,14 @@ class HomePage extends Component {
     const className = `homepage-gallery-panel ${ type }`
     return (
       <div className="homepage-gallery">
-      <div className={ className }>
-      {
-        items.map(item => {
-          return <HomePageList key={ item.id } item={ item } type={ type } />
-        })
-      }
-  </div>
-  </div>
+        <div className={ className }>
+          {
+            items.map(item => {
+              return <HomePageList key={ item.id } item={ item } type={ type } />
+            })
+          }
+        </div>
+      </div>
     )
   }
 
