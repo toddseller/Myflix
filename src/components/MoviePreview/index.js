@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import LazyLoad from 'react-lazyload'
 
-import '../styles/movie-preview.css'
+import './index.css'
 
 class MoviePreview extends Component {
   _onClick = () => {
