@@ -118,7 +118,7 @@ class SearchBox extends Component {
         <IconButton
           iconStyle={ baseStyles.smallIcon }
           style={ addStyle }
-          onClick={ handleOnSubmit }
+          onSubmit={ handleOnSubmit }
           type="submit"
         >
           <AddIcon/>
