@@ -7,6 +7,7 @@ import AddIcon from 'material-ui/svg-icons/content/add'
 import { setTextFilter } from '../../actions/filters'
 import validate from '../forms/validate'
 import { startFetchSearchNewMovies, clearSearchNewMovies } from '../../actions/newMovie'
+import './index.css'
 
 const baseStyles = {
   box: {
@@ -83,7 +84,9 @@ class SearchBox extends Component {
     }
   }
 
-  handleOnSubmit = () => {
+  handleOnSubmit = e => {
+    e.preventDefault()
+    e.stopPropagation()
     this.props.clearSearchNewMovies()
     this.props.onClick()
     this.props.startFetchSearchNewMovies(this.state.value)
@@ -100,14 +103,14 @@ class SearchBox extends Component {
     const addStyle = isOpen ? Object.assign({}, baseStyles.icon, baseStyles.addIconOpen) : Object.assign({}, baseStyles.icon, baseStyles.addIconClosed)
     return (
       <div style={ divStyle }>
-        <form action="">
-          <IconButton
-            iconStyle={ baseStyles.smallIcon }
-            style={ baseStyles.icon }
-            onClick={ onClick }
-          >
-            <SearchIcon/>
-          </IconButton>
+        <IconButton
+          iconStyle={ baseStyles.smallIcon }
+          style={ baseStyles.icon }
+          onClick={ onClick }
+        >
+          <SearchIcon/>
+        </IconButton>
+        <form className='search-form' onSubmit={ handleOnSubmit }>
           <TextField
             name='search'
             value={ text }
@@ -119,7 +122,6 @@ class SearchBox extends Component {
           <IconButton
             iconStyle={ baseStyles.smallIcon }
             style={ addStyle }
-            onSubmit={ handleOnSubmit }
             type="submit"
           >
             <AddIcon/>
