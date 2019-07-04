@@ -100,29 +100,31 @@ class SearchBox extends Component {
     const addStyle = isOpen ? Object.assign({}, baseStyles.icon, baseStyles.addIconOpen) : Object.assign({}, baseStyles.icon, baseStyles.addIconClosed)
     return (
       <div style={ divStyle }>
-        <IconButton
-          iconStyle={ baseStyles.smallIcon }
-          style={ baseStyles.icon }
-          onClick={ onClick }
-        >
-          <SearchIcon/>
-        </IconButton>
-        <TextField
-          name='search'
-          value={ text }
-          onChange={ handleOnChange }
-          style={ textStyle }
-          autoComplete='off'
-          inputStyle={ inputStyle }
-        />
-        <IconButton
-          iconStyle={ baseStyles.smallIcon }
-          style={ addStyle }
-          onSubmit={ handleOnSubmit }
-          type="submit"
-        >
-          <AddIcon/>
-        </IconButton>
+        <form action="">
+          <IconButton
+            iconStyle={ baseStyles.smallIcon }
+            style={ baseStyles.icon }
+            onClick={ onClick }
+          >
+            <SearchIcon/>
+          </IconButton>
+          <TextField
+            name='search'
+            value={ text }
+            onChange={ handleOnChange }
+            style={ textStyle }
+            autoComplete='off'
+            inputStyle={ inputStyle }
+          />
+          <IconButton
+            iconStyle={ baseStyles.smallIcon }
+            style={ addStyle }
+            onSubmit={ handleOnSubmit }
+            type="submit"
+          >
+            <AddIcon/>
+          </IconButton>
+        </form>
       </div>
     )
   }
