@@ -75,9 +75,9 @@ hr:nth-of-type(2)
   width: 100vw;
   display: flex;
   align-items: center;
-  justify-content: center;
   position: relative;
   top: 108px;
+  z-index: 100;
 }
 
 .new-preview--deactive
@@ -85,6 +85,7 @@ hr:nth-of-type(2)
   height: 0;
   color: transparent;
   transition: all 400ms linear;
+  margin-left: 5%;
 }
 
 .new-preview--active
@@ -92,14 +93,18 @@ hr:nth-of-type(2)
   height: 350px;
   transition: all 400ms linear;
   color: #ffffff;
+  margin-left: 5%;
 }
 
 .searching-spinner
 {
   display: flex;
   justify-content: center;
-  /*align-items: center;*/
   flex-direction: column;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .searching-spinner h1
@@ -107,7 +112,7 @@ hr:nth-of-type(2)
   color: #ffffff;
   font-size: 1.5rem;
   font-weight: 400;
-  margin: 0;
+  margin: 0 auto;
 }
 
 .searching-spinner .sk-circle

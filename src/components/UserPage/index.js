@@ -97,9 +97,13 @@ class UserPage extends Component {
   render() {
     const { movies, newMovies } = this.props
     const { library, unwatched, isSearching, isLoading } = this.state
-    const previewClases = classnames(
+    const previewClasses = classnames(
       'new-preview',
       `new-preview--${ isSearching ? 'active' : 'deactive' }`
+    )
+    const movieClasses = classnames(
+      'movies-list',
+      `${ isSearching ? 'fixed' : '' }`
     )
     if (movies.length < 1 && isLoading) {
       return <LoadingPage />
@@ -128,7 +132,7 @@ class UserPage extends Component {
             Unwatched
           </ToggleButton>
         </div>
-        <div className={ previewClases }>
+        <div className={ previewClasses }>
           { newMovies.length === 0 && isSearching &&
           <div className="searching-spinner">
             <h1>Searching our database&#8230;</h1>
@@ -139,7 +143,7 @@ class UserPage extends Component {
             return <NewMoviePreview key={ index } movie={ movie } onClick={ this.onClick } />
           }) }
         </div>
-        <div className="movies-list">
+        <div className={ movieClasses }>
           {
             movies.map(movie => {
               return <MoviePreview key={ movie.id } id={ movie.id } onClick={ this.fetchMovieData } />
