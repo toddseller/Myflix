@@ -99,7 +99,8 @@ class UserPage extends Component {
     const { library, unwatched, isSearching, isLoading } = this.state
     const previewClasses = classnames(
       'new-preview',
-      `new-preview--${ isSearching ? 'active' : 'deactive' }`
+      `new-preview--${ isSearching ? 'active' : 'deactive' }`,
+      `${ newMovies.length <= 7 && isSearching ? 'centered' : '' }`
     )
     const movieClasses = classnames(
       'movies-list',

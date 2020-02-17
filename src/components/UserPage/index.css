@@ -103,6 +103,12 @@ hr:nth-of-type(2)
   margin-left: 5%;
 }
 
+.centered
+{
+  justify-content: center;
+  margin: 0 auto;
+}
+
 .searching-spinner
 {
   display: flex;
