@@ -65,7 +65,7 @@ class UserPage extends Component {
     const previewClasses = classnames(
       'new-preview',
       `new-preview--${ isSearching ? 'active' : 'deactive' }`,
-      `${ newMovies.length <= 7 && newShows.length <= 7 && newEpisodes.length <= 6 && isSearching ? 'centered' : '' }`
+      `${ newMovies.length <= 7 && newShows.length <= 7 && newEpisodes.length <= 5 && isSearching ? 'centered' : '' }`
     )
     const movieClasses = classnames(
       'movies-list',
