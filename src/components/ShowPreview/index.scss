@@ -1,43 +1,54 @@
-.movies-list
+.shows-list
 {
   display: grid;
   grid-gap: .5rem 2rem;
-  grid-template-columns: repeat(auto-fit, 174px);
+  grid-template-columns: repeat(auto-fit, 200px);
   justify-content: center;
   max-width: 1920px;
   margin: 0 auto;
   margin-top: 140px;
 }
 
-.movie-preview
+.show-preview
 {
   position: relative;
-  width: 174px;
-  height: 303px;
+  width: 200px;
+  height: 260px;
+
+  & .truncate {
+    text-align: left;
+    width: 200px;
+  }
+}
+
+.fixed
+{
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%);
 }
 
 .truncate
 {
   overflow: hidden;
-  width: 174px;
   margin: 0 auto;
   margin-top: 2px;
   white-space: nowrap;
   text-overflow: ellipsis;
   color: #ffffff;
   font-size: .9rem;
-  text-align: center;
   font-weight: 300;
+  margin-left: 0 !important;
 }
 
-span.new::before
+.seasons
 {
-  content: '\2022\A0';
-  color: #e50914;
-  font-size: 1.5rem;
-  line-height: .35rem;
-  position: relative;
-  top: .2rem;
+  margin: 0;
+  margin-top: 2px;
+  color: rgba(255,255,255,.7);
+  font-size: .8rem;
+  text-align: left !important;
+  font-weight: 300;
 }
 
 .display-by
@@ -84,14 +95,14 @@ hr:nth-of-type(2)
 {
   height: 0;
   color: transparent;
-  transition: all 400ms linear;
+  transition: all 400ms linear, margin-left 0ms;
   margin-left: 5%;
 }
 
 .new-preview--active
 {
   height: 350px;
-  transition: all 400ms linear;
+  transition: all 400ms linear, margin-left 0ms;
   color: #ffffff;
   margin-left: 5%;
 }
@@ -146,7 +157,7 @@ hr:nth-of-type(2)
 and (min-device-width: 1200px)
 and (max-device-width: 1680px)
 and (-webkit-min-device-pixel-ratio: 1) {
-  .movies-list
+  .shows-list
   {
     max-width: 1560px;
   }
@@ -162,7 +173,7 @@ and (min-device-width: 1200px)
 and (max-device-width: 1680px)
 and (-webkit-min-device-pixel-ratio: 2)
 and (min-resolution: 192dpi) {
-  .movies-list
+  .shows-list
   {
     max-width: 1560px;
   }

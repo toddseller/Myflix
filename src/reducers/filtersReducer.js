@@ -1,6 +1,6 @@
 const filtersReducerDefaultState = {
   text: '',
-  display: 'all'
+  media: 'movies'
 }
 
 export default (state = filtersReducerDefaultState, action) => {
@@ -10,15 +10,10 @@ export default (state = filtersReducerDefaultState, action) => {
         ...state,
         text: action.text
       }
-    case 'SET_DISPLAY_ALL':
+    case 'SET_SELECTED_MEDIA':
       return {
         ...state,
-        display: 'all'
-      }
-    case 'SET_DISPLAY_UNWATCHED':
-      return {
-        ...state,
-        display: 'isNew'
+        media: action.media
       }
     default:
       return state

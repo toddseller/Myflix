@@ -7,6 +7,10 @@ import homePageReducer from '../reducers/homePageReducer'
 import userMovieReducer from '../reducers/userMovieReducer'
 import filtersReducer from '../reducers/filtersReducer'
 import newMovieReducer from '../reducers/newMovieReducer'
+import newShowReducer from '../reducers/newShowReducer'
+import userShowReducer from '../reducers/userShowReducer'
+import newEpisodeReducer from '../reducers/newEpisodeReducer'
+import countReducer from '../reducers/countReducer'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -16,8 +20,12 @@ export default () => {
       auth: authReducer,
       home: homePageReducer,
       movies: userMovieReducer,
-      new: newMovieReducer,
+      shows: userShowReducer,
+      newMovies: newMovieReducer,
+      newShows: newShowReducer,
+      newEpisodes: newEpisodeReducer,
       filters: filtersReducer,
+      counts: countReducer,
       form: formReducer
     }),
     composeEnhancers(applyMiddleware(reduxThunk))

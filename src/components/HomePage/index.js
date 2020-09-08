@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import HomePageList from '../HomePageList'
 import TopUserList from '../TopUserList'
 import { getHomePageData } from '../../actions/homePage'
+import Tabs from '../Tabs'
 import '../../styles/base.css'
 import './index.css'
 
@@ -12,45 +13,12 @@ class HomePage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      displayTopMovies: true,
-      displayRecentMovies: false,
-      displayRecentShows: false,
-      displayTopUsers: false
+      selectedTab: 'most_popular'
     }
   }
 
-  toggleDisplay = (element) => {
-    this.props.getHomePageData()
-
-    if (element === 'rm') {
-      this.setState({
-        displayTopMovies: false,
-        displayRecentMovies: true,
-        displayRecentShows: false,
-        displayTopUsers: false
-      })
-    } else if (element === 'tm') {
-      this.setState({
-        displayTopMovies: true,
-        displayRecentMovies: false,
-        displayRecentShows: false,
-        displayTopUsers: false
-      })
-    } else if (element === 'rs') {
-      this.setState({
-        displayTopMovies: false,
-        displayRecentMovies: false,
-        displayRecentShows: true,
-        displayTopUsers: false
-      })
-    } else if (element === 'tu') {
-      this.setState({
-        displayTopMovies: false,
-        displayRecentMovies: false,
-        displayRecentShows: false,
-        displayTopUsers: true
-      })
-    }
+  toggleSelectedButton = tabId => {
+    this.setState({ selectedTab: tabId })
   }
 
   displayItems = (items, type) => {
@@ -89,35 +57,37 @@ class HomePage extends Component {
         </div>
         <div className="homepage-cards">
           <div className="homepage-cards-nav">
-            <div
-              onClick={ () => this.toggleDisplay('tm') }
-              className={ this.state.displayTopMovies ? 'homepage-cards-nav-element active' : 'homepage-cards-nav-element' }
-            >
-              Most Popular
-            </div>
-            <div
-              onClick={ () => this.toggleDisplay('rm') }
-              className={ this.state.displayRecentMovies ? 'homepage-cards-nav-element active' : 'homepage-cards-nav-element' }
-            >
-              Recent Movies
-            </div>
-            <div
-              onClick={ () => this.toggleDisplay('rs') }
-              className={ this.state.displayRecentShows ? 'homepage-cards-nav-element active' : 'homepage-cards-nav-element' }
-            >
-              Recent TV Shows
-            </div>
-            <div
-              onClick={ () => this.toggleDisplay('tu') }
-              className={ this.state.displayTopUsers ? 'homepage-cards-nav-element active' : 'homepage-cards-nav-element' }
-            >
-              Top Users
-            </div>
+            <Tabs activeTab={ this.state.selectedTab } style={ ['space-between'] }>
+              <Tabs.Tab
+                tabId='most_popular'
+                onClick={ this.toggleSelectedButton }
+              >
+                Most Popular
+              </Tabs.Tab>
+              <Tabs.Tab
+                tabId='recent_movies'
+                onClick={ this.toggleSelectedButton }
+              >
+                Recent Movies
+              </Tabs.Tab>
+              <Tabs.Tab
+                tabId='recent_tv_shows'
+                onClick={ this.toggleSelectedButton }
+              >
+                Recent TV Shows
+              </Tabs.Tab>
+              <Tabs.Tab
+                tabId='top_users'
+                onClick={ this.toggleSelectedButton }
+              >
+                Top Users
+              </Tabs.Tab>
+            </Tabs>
           </div>
-          { this.state.displayTopMovies && this.displayItems(topMovies, 'movie') }
-          { this.state.displayRecentMovies && this.displayItems(recentMovies, 'movie') }
-          { this.state.displayRecentShows && this.displayItems(recentShows, 'show') }
-          { this.state.displayTopUsers && <TopUserList users={ topUsers } />}
+          { this.state.selectedTab === 'most_popular' && this.displayItems(topMovies, 'movie') }
+          { this.state.selectedTab === 'recent_movies' && this.displayItems(recentMovies, 'movie') }
+          { this.state.selectedTab === 'recent_tv_shows' && this.displayItems(recentShows, 'show') }
+          { this.state.selectedTab === 'top_users' && <TopUserList users={ topUsers } /> }
         </div>
       </div>
     )

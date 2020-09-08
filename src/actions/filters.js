@@ -3,10 +3,7 @@ export const setTextFilter = (text = '') => ({
   text
 })
 
-export const setDisplayAll = () => ({
-  type: 'SET_DISPLAY_ALL'
-})
-
-export const setDisplayUnwatched = () => ({
-  type: 'SET_DISPLAY_UNWATCHED'
+export const setSelectedMedia = (media = '') => ({
+  type: 'SET_SELECTED_MEDIA',
+  media
 })

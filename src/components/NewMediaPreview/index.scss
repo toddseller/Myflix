@@ -1,0 +1,70 @@
+.new-movie-preview
+{
+  color: #ffffff;
+}
+
+.movie-preview
+{
+  margin: 0 .75rem;
+  width: 174px;
+
+  & p.truncate
+  {
+    text-align: left;
+  }
+
+  & p.year
+  {
+    font-size: .9rem;
+    font-weight: 300;
+    margin: 0;
+  }
+}
+
+.show-preview
+{
+  margin: 0 .75rem;
+  width: 200px;
+
+  & p.truncate
+  {
+    text-align: left;
+  }
+
+  & p.year
+  {
+    font-size: .9rem;
+    font-weight: 300;
+    margin: 0;
+  }
+}
+
+.episode-preview
+{
+  margin: 0 .75rem;
+  width: 300px;
+
+  & p.truncate
+  {
+    text-align: left;
+  }
+
+  & p.year
+  {
+    font-size: .85rem;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  &.all-episodes
+  {
+    margin-top: -35px;
+    background-color: rgba(255, 255, 255, .06);
+    height: 169px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+
+  }
+}

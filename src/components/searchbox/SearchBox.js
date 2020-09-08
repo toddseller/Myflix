@@ -7,6 +7,8 @@ import AddIcon from 'material-ui/svg-icons/content/add'
 import { setTextFilter } from '../../actions/filters'
 import validate from '../forms/validate'
 import { startFetchSearchNewMovies, clearSearchNewMovies } from '../../actions/newMovie'
+import { startFetchSearchNewShows, clearSearchNewShows } from '../../actions/newShow'
+import { clearSearchNewEpisodes } from '../../actions/newEpisode'
 import './index.css'
 
 const baseStyles = {
@@ -28,14 +30,14 @@ const baseStyles = {
   smallIcon: {
     width: 30,
     height: 30,
-    color: '#ffffff'
+    color: '#FFFFFF'
   },
   icon: {
     width: 40,
     height: 40,
     padding: 5,
     top: 10,
-    color: '#ffffff'
+    color: '#FFFFFF'
   },
   addIconOpen: {
     transform: 'scaleX(1)',
@@ -48,7 +50,7 @@ const baseStyles = {
 }
 
 const inputStyle = {
-  color: '#ffffff',
+  color: '#FFFFFF',
   fontFamily: 'Helvetica Nueue, Helvetica, sans-serif',
   fontWeight: 300,
   border: 'none'
@@ -77,19 +79,34 @@ class SearchBox extends Component {
     this.setState({ isOpen: !this.state.isOpen })
     this.props.isLoading()
     this.props.setTextFilter('')
-    this.props.clearSearchNewMovies()
-    this.setState({value: ''})
-    if (this.props.newMovies.length > 1) {
-      this.props.onClick()
+    if (this.props.filters.media === 'movies') {
+      this.props.clearSearchNewMovies()
+      this.setState({ value: '' })
+      if (this.props.newMovies.length > 1) {
+        this.props.onClick()
+      }
+    } else {
+      this.props.clearSearchNewShows()
+      this.props.clearSearchNewEpisodes()
+      this.setState({ value: '' })
+      if (this.props.newShows.length > 1) {
+        this.props.onClick()
+      }
     }
   }
 
   handleOnSubmit = e => {
     e.preventDefault()
     e.stopPropagation()
-    this.props.clearSearchNewMovies()
-    this.props.onClick()
-    this.props.startFetchSearchNewMovies(this.state.value)
+    if (this.props.filters.media === 'movies') {
+      this.props.clearSearchNewMovies()
+      this.props.onClick()
+      this.props.startFetchSearchNewMovies(this.state.value)
+    } else {
+      this.props.clearSearchNewShows()
+      this.props.onClick()
+      this.props.startFetchSearchNewShows(this.state.value)
+    }
   }
 
   render() {
@@ -108,7 +125,7 @@ class SearchBox extends Component {
           style={ baseStyles.icon }
           onClick={ onClick }
         >
-          <SearchIcon/>
+          <SearchIcon />
         </IconButton>
         <form className='search-form' onSubmit={ handleOnSubmit }>
           <TextField
@@ -124,7 +141,7 @@ class SearchBox extends Component {
             style={ addStyle }
             type="submit"
           >
-            <AddIcon/>
+            <AddIcon />
           </IconButton>
         </form>
       </div>
@@ -134,7 +151,8 @@ class SearchBox extends Component {
 
 const mapStateToProps = state => ({
   filters: state.filters,
-  newMovies: Object.values(state.new)
+  newMovies: Object.values(state.newMovies),
+  newShows: Object.values(state.newShows)
 })
 
-export default connect(mapStateToProps, { setTextFilter, startFetchSearchNewMovies, clearSearchNewMovies })(SearchBox)
+export default connect(mapStateToProps, { setTextFilter, startFetchSearchNewMovies, clearSearchNewMovies, startFetchSearchNewShows, clearSearchNewShows, clearSearchNewEpisodes })(SearchBox)

@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import LazyLoad from 'react-lazyload'
 
-import './index.css'
+import './index.scss'
 
 class MoviePreview extends Component {
   _onClick = () => {
-    console.log(this.props.movie.id)
     this.props.onClick(this.props.movie.id)
   }
   render() {
