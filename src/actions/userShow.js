@@ -1,5 +1,6 @@
 // import { history } from '../routers/AppRouter'
 import mmdb from '../apis/mmdb'
+import { getHomePageData } from './homePage'
 
 export const fetchShows = shows => {
   return {

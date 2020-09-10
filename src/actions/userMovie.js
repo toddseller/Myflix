@@ -1,5 +1,6 @@
 // import { history } from '../routers/AppRouter'
 import mmdb from '../apis/mmdb'
+import { getHomePageData } from './homePage'
 
 export const fetchMovies = movies => {
   return {
@@ -35,12 +36,13 @@ export const startAddMovie = movie => async dispatch => {
   const response = await mmdb.post('/add_movie', { movie })
 
   dispatch(addMovie(response.data))
+  getHomePageData()
 }
 
 export const startFetchMovie = id => async dispatch => {
   const myflixUser = window.localStorage.getItem('myflixUser') ? JSON.parse(window.localStorage.getItem('myflixUser')) : JSON.parse(window.sessionStorage.getItem('myflixUser'))
   mmdb.defaults.headers.common['Authorization'] = `bearer ${ myflixUser.token }`
-  const response = await mmdb.get(`/movies/${id}`)
+  const response = await mmdb.get(`/movies/${ id }`)
 
   dispatch(fetchMovie(response.data))
   console.log(response.data)

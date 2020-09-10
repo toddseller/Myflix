@@ -13,7 +13,7 @@ import userShowReducer from '../reducers/userShowReducer'
 import newEpisodeReducer from '../reducers/newEpisodeReducer'
 import countReducer from '../reducers/countReducer'
 
-const composeEnhancers = composeWithDevTools(compose)
+const composeEnhancers = composeWithDevTools({ compose })
 
 export default () => {
   const store = createStore(

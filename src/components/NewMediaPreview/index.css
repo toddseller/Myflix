@@ -1,22 +1,22 @@
-.new-movie-preview
-{
-  color: #ffffff;
-}
+/*.new-movie-preview*/
+/*{*/
+/*  color: #ffffff;*/
+/*}*/
 
-.preview
-{
-  margin: 0 .75rem;
-  width: 174px;
-}
+/*.preview*/
+/*{*/
+/*  margin: 0 .75rem;*/
+/*  width: 174px;*/
+/*}*/
 
-.preview > p.truncate
-{
-  text-align: left;
-}
+/*.preview > p.truncate*/
+/*{*/
+/*  text-align: left;*/
+/*}*/
 
-.preview > p.year
-{
-  font-size: .9rem;
-  font-weight: 300;
-  margin: 0;
-}
+/*.preview > p.year*/
+/*{*/
+/*  font-size: .9rem;*/
+/*  font-weight: 300;*/
+/*  margin: 0;*/
+/*}*/
