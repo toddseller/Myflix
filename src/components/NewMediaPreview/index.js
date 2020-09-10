@@ -8,7 +8,7 @@ import { startAddShow, startAddEpisodes } from '../../actions/userShow'
 import { clearSearchNewShows } from '../../actions/newShow'
 import { startFetchSearchNewEpisodes, clearSearchNewEpisodes } from '../../actions/newEpisode'
 
-import './index.scss'
+import './newMediaPreview.scss'
 
 class NewMediaPreview extends Component {
   onClick = () => {
