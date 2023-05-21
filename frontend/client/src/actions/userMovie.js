@@ -36,7 +36,7 @@ export const startAddMovie = movie => async dispatch => {
   const response = await mmdb.post('/add_movie', { movie })
 
   dispatch(addMovie(response.data))
-  getHomePageData()
+  dispatch(getHomePageData())
 }
 
 export const startFetchMovie = id => async dispatch => {

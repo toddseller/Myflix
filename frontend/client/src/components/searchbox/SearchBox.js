@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { TextField, IconButton } from 'material-ui'
-import SearchIcon from 'material-ui/svg-icons/action/search'
-import AddIcon from 'material-ui/svg-icons/content/add'
+import { TextField, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
+import AddIcon from '@material-ui/icons/Add'
 
 import { setTextFilter } from '../../actions/filters'
 import validate from '../forms/validate'
 import { startFetchSearchNewMovies, clearSearchNewMovies } from '../../actions/newMovie'
 import { startFetchSearchNewShows, clearSearchNewShows } from '../../actions/newShow'
 import { clearSearchNewEpisodes } from '../../actions/newEpisode'
-import './index.css'
+import './index.scss'
 
 const baseStyles = {
   box: {
@@ -80,15 +80,15 @@ class SearchBox extends Component {
     this.props.isLoading()
     this.props.setTextFilter('')
     if (this.props.filters.media === 'movies') {
-      this.props.clearSearchNewMovies()
       this.setState({ value: '' })
+      this.props.clearSearchNewMovies()
       if (this.props.newMovies.length > 1) {
         this.props.onClick()
       }
     } else {
+      this.setState({ value: '' })
       this.props.clearSearchNewShows()
       this.props.clearSearchNewEpisodes()
-      this.setState({ value: '' })
       if (this.props.newShows.length > 1) {
         this.props.onClick()
       }
@@ -121,7 +121,7 @@ class SearchBox extends Component {
     return (
       <div style={ divStyle }>
         <IconButton
-          iconStyle={ baseStyles.smallIcon }
+          classes={ baseStyles.smallIcon }
           style={ baseStyles.icon }
           onClick={ onClick }
         >
@@ -134,10 +134,10 @@ class SearchBox extends Component {
             onChange={ handleOnChange }
             style={ textStyle }
             autoComplete='off'
-            inputStyle={ inputStyle }
+            classes={ inputStyle }
           />
           <IconButton
-            iconStyle={ baseStyles.smallIcon }
+            classes={ baseStyles.smallIcon }
             style={ addStyle }
             type="submit"
           >
@@ -155,4 +155,11 @@ const mapStateToProps = state => ({
   newShows: Object.values(state.newShows)
 })
 
-export default connect(mapStateToProps, { setTextFilter, startFetchSearchNewMovies, clearSearchNewMovies, startFetchSearchNewShows, clearSearchNewShows, clearSearchNewEpisodes })(SearchBox)
+export default connect(mapStateToProps, {
+  setTextFilter,
+  startFetchSearchNewMovies,
+  clearSearchNewMovies,
+  startFetchSearchNewShows,
+  clearSearchNewShows,
+  clearSearchNewEpisodes
+})(SearchBox)

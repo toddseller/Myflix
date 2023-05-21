@@ -162,7 +162,7 @@ class UserPage extends Component {
           }
         </div>
         { displayList() }
-        <div className="movie-count">{ mediaCount() }</div>
+        <div className="movie-count">{ moviesCount && mediaCount() }</div>
       </div>
     )
   }
