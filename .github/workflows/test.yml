@@ -1,0 +1,38 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The master ruleset requires a check named "test"; renaming this job silently drops the requirement.
+  test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend/client
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: frontend/client/.nvmrc
+          cache: yarn
+          cache-dependency-path: frontend/client/yarn.lock
+
+      - run: yarn install --frozen-lockfile
+
+      - run: yarn test
+
+      - run: yarn build
