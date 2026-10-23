@@ -27,6 +27,15 @@ it('submits the user, password and remember choice', () => {
   expect(onSubmit.mock.calls[0][0]).toEqual({ username_email: 'ann@example.test', password: 'secret', remember: true })
 })
 
+it('ticks Remember me when its text is clicked', () => {
+  const { container } = renderWithStore(<LoginForm onSubmit={ vi.fn() } />)
+  const { remember } = fields(container)
+
+  fireEvent.click([...container.querySelectorAll('label')].find(l => l.textContent === 'Remember me'))
+
+  expect(remember.checked).toBe(true)
+})
+
 it('shows Required under the password and does not submit when it is empty', () => {
   const onSubmit = vi.fn()
   const { container } = renderWithStore(<LoginForm onSubmit={ onSubmit } />)
