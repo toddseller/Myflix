@@ -82,10 +82,12 @@ hr:nth-of-type(2)
   border-bottom: 2px solid rgb(229,9,20) !important;
 }
 
+// The old build's minifier turned the Retina media queries below (and their copies in the
+// preview stylesheets) into unconditional rules, so 9.4vw and 1560px are what users have seen.
 .search-bar
 {
   position: fixed;
-  right: 15vw;
+  right: 9.4vw;
   z-index: 3;
   display: flex;
   justify-content: flex-end;
@@ -95,6 +97,7 @@ hr:nth-of-type(2)
 
 .new-preview
 {
+  max-width: 1560px;
   width: 100vw;
   display: flex;
   align-items: center;
