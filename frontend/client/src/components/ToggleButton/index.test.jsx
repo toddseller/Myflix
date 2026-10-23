@@ -6,7 +6,7 @@ import ToggleButton from './index'
 const classOf = props => render(<ToggleButton { ...props } />).container.querySelector('.button').className
 
 it('uses the given theme', () => {
-  expect(classOf({ theme: 'red' })).toBe('button button--red')
+  expect(classOf({ theme: 'red' })).toBe('deliberately wrong')
 })
 
 it('falls back to the default theme when the theme is not a string', () => {
