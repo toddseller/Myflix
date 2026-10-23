@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { MuiThemeProvider } from '@material-ui/core/styles'
 import { Provider } from 'react-redux'
 
 import AppRouter, { history } from './routers/AppRouter'
@@ -13,11 +12,9 @@ import { installSessionExpiry } from './apis/sessionExpiry'
 const store = configureStore()
 installSessionExpiry(mmdb, { dispatch: store.dispatch, history, storages: [window.localStorage, window.sessionStorage] })
 const jsx = (
-  <MuiThemeProvider>
-    <Provider store={ store }>
-      <AppRouter />
-    </Provider>
-  </MuiThemeProvider>
+  <Provider store={ store }>
+    <AppRouter />
+  </Provider>
 )
 let hasRendered = false
 const renderApp = () => {

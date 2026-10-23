@@ -5,7 +5,6 @@ import isBoolean from 'lodash/isBoolean'
 import isFunction from 'lodash/isFunction'
 
 import './index.css'
-import { isString } from '@material-ui/core/es/styles/transitions'
 
 class ToggleButton extends Component {
   state = { selected: this.selectedFromProps() }
@@ -38,7 +37,7 @@ class ToggleButton extends Component {
   render() {
     const { selected } = this.state
     const { selected: _selected, theme, onClick, className, onStateChanged, style, ...restProps } = this.props
-    const buttonTheme = (theme && isString(theme)) ? theme : 'default'
+    const buttonTheme = typeof theme === 'string' ? theme : 'default'
     const buttonClasses = classnames(
       `button button--${ buttonTheme }`,
       className

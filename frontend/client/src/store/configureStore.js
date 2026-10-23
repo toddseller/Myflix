@@ -1,5 +1,4 @@
 import { combineReducers, applyMiddleware, createStore, compose } from 'redux'
-import { reducer as formReducer } from 'redux-form'
 import reduxThunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 
@@ -26,8 +25,7 @@ export default () => {
       newShows: newShowReducer,
       newEpisodes: newEpisodeReducer,
       filters: filtersReducer,
-      counts: countReducer,
-      form: formReducer
+      counts: countReducer
     }),
     composeEnhancers(applyMiddleware(reduxThunk))
   )

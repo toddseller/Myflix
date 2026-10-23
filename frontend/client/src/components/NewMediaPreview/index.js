@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import AddIcon from '@material-ui/icons/Add'
+import { AddIcon } from '../icons'
 
 import { startAddMovie } from '../../actions/userMovie'
 import { clearSearchNewMovies } from '../../actions/newMovie'
