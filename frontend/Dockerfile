@@ -1,7 +1,7 @@
-FROM node:14-buster-slim AS builder
+FROM node:24-slim AS builder
 WORKDIR /app
 COPY ./client* ./
-RUN yarn install && yarn build
+RUN yarn install --frozen-lockfile && yarn build
 
 # nginx state for serving content
 FROM nginx:alpine
