@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import compose from 'recompose/compose'
-import { forceCheck } from 'react-lazyload'
+import { compose } from 'redux'
 import classnames from 'classnames'
 
 import { startFetchMovies, startFetchMovie } from '../../actions/userMovie'
@@ -55,9 +54,6 @@ class UserPage extends Component {
     return <LoadingPage />
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    forceCheck()
-  }
 
   render() {
     const { movies, newMovies, shows, moviesCount, showsCount, episodesCount, selectedMedia, newShows, newEpisodes } = this.props

@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { TextField, IconButton } from '@material-ui/core'
-import SearchIcon from '@material-ui/icons/Search'
-import AddIcon from '@material-ui/icons/Add'
+import { SearchIcon, AddIcon } from '../icons'
 
 import { setTextFilter } from '../../actions/filters'
 import validate from '../forms/validate'
@@ -27,11 +25,6 @@ const baseStyles = {
       background: 'transparent'
     }
   },
-  smallIcon: {
-    width: 30,
-    height: 30,
-    color: '#FFFFFF'
-  },
   icon: {
     width: 40,
     height: 40,
@@ -47,13 +40,6 @@ const baseStyles = {
     transform: 'scaleX(0)',
     transition: 'all 750ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
   }
-}
-
-const inputStyle = {
-  color: '#FFFFFF',
-  fontFamily: 'Helvetica Nueue, Helvetica, sans-serif',
-  fontWeight: 300,
-  border: 'none'
 }
 
 const animationStyle = {
@@ -120,29 +106,16 @@ class SearchBox extends Component {
     const addStyle = isOpen ? Object.assign({}, baseStyles.icon, baseStyles.addIconOpen) : Object.assign({}, baseStyles.icon, baseStyles.addIconClosed)
     return (
       <div style={ divStyle }>
-        <IconButton
-          classes={ baseStyles.smallIcon }
-          style={ baseStyles.icon }
-          onClick={ onClick }
-        >
+        <button type="button" className="search-icon-button" style={ baseStyles.icon } onClick={ onClick }>
           <SearchIcon />
-        </IconButton>
+        </button>
         <form className='search-form' onSubmit={ handleOnSubmit }>
-          <TextField
-            name='search'
-            value={ text }
-            onChange={ handleOnChange }
-            style={ textStyle }
-            autoComplete='off'
-            classes={ inputStyle }
-          />
-          <IconButton
-            classes={ baseStyles.smallIcon }
-            style={ addStyle }
-            type="submit"
-          >
+          <div className="search-field" style={ textStyle }>
+            <input name='search' value={ text } onChange={ handleOnChange } autoComplete='off' />
+          </div>
+          <button type="submit" className="search-icon-button" style={ addStyle }>
             <AddIcon />
-          </IconButton>
+          </button>
         </form>
       </div>
     )

@@ -15,7 +15,7 @@ const fakeStorage = () => {
 
 const setup = () => {
   const api = fakeApi()
-  const deps = { dispatch: jest.fn(), history: { push: jest.fn() }, storages: [fakeStorage(), fakeStorage()] }
+  const deps = { dispatch: vi.fn(), history: { push: vi.fn() }, storages: [fakeStorage(), fakeStorage()] }
   installSessionExpiry(api, deps)
   return { api, ...deps }
 }

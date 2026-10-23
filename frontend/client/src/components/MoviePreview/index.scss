@@ -4,7 +4,7 @@
   grid-gap: .5rem 2rem;
   grid-template-columns: repeat(auto-fit, 174px);
   justify-content: center;
-  max-width: 1920px;
+  max-width: 1560px;
   margin: 0 auto;
   margin-top: 140px;
 }
@@ -73,7 +73,7 @@ hr:nth-of-type(2)
 .search-bar
 {
   position: fixed;
-  right: 15vw;
+  right: 9.4vw;
   z-index: 3;
   display: flex;
   justify-content: flex-end;

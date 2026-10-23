@@ -1,7 +1,5 @@
 import { combineReducers, applyMiddleware, createStore, compose } from 'redux'
-import { reducer as formReducer } from 'redux-form'
-import reduxThunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
+import { thunk } from 'redux-thunk'
 
 import authReducer from '../reducers/authReducer'
 import homePageReducer from '../reducers/homePageReducer'
@@ -13,7 +11,8 @@ import userShowReducer from '../reducers/userShowReducer'
 import newEpisodeReducer from '../reducers/newEpisodeReducer'
 import countReducer from '../reducers/countReducer'
 
-const composeEnhancers = composeWithDevTools({ compose })
+// The Redux DevTools browser extension, in development only.
+const composeEnhancers = (import.meta.env.DEV && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
 
 export default () => {
   const store = createStore(
@@ -26,10 +25,9 @@ export default () => {
       newShows: newShowReducer,
       newEpisodes: newEpisodeReducer,
       filters: filtersReducer,
-      counts: countReducer,
-      form: formReducer
+      counts: countReducer
     }),
-    composeEnhancers(applyMiddleware(reduxThunk))
+    composeEnhancers(applyMiddleware(thunk))
   )
 
   return store

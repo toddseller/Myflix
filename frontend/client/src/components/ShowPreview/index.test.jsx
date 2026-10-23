@@ -1,6 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import { act } from 'react-dom/test-utils'
+import { render as renderDom } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 
@@ -8,16 +7,11 @@ import ShowPreview from './index'
 
 const render = title => {
   const show = { id: 1, title, poster: 'poster.jpg', seasonCount: '1', seasonNumbers: '1' }
-  const container = document.createElement('div')
-  act(() => {
-    ReactDOM.render(
-      <Provider store={ createStore(() => ({ shows: { 1: show } })) }>
-        <ShowPreview id={ 1 } onClick={ () => {} } />
-      </Provider>,
-      container
-    )
-  })
-  return container
+  return renderDom(
+    <Provider store={ createStore(() => ({ shows: { 1: show } })) }>
+      <ShowPreview id={ 1 } onClick={ () => {} } />
+    </Provider>
+  ).container
 }
 
 it('decodes entities in the title', () => {

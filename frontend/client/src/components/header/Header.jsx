@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import { history } from '../../routers/AppRouter'
+import { router } from '../../routers/router'
 import HeaderButton from './HeaderButton'
 import UserNav from './UserNav'
 
@@ -12,11 +12,18 @@ class Header extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pathName: ''
+      pathName: router.state.location.pathname.substr(1)
     }
-    history.listen((location) => {
+  }
+
+  componentDidMount() {
+    this.unsubscribe = router.subscribe(({ location }) => {
       this.setState({ pathName: location.pathname.substr(1) })
     })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe()
   }
 
   render() {
