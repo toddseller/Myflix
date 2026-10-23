@@ -39,15 +39,15 @@ it('shows Required under the password and does not submit when it is empty', () 
   expect(errorTexts(container)).toEqual(['Required'])
 })
 
-// validate.js checks `userNameEmail` but the field is `username_email`, so an empty user is never flagged.
-it('submits with an empty user, because validate.js checks the wrong field name', () => {
+it('shows Required under the user and does not submit when it is empty', () => {
   const onSubmit = vi.fn()
   const { container } = renderWithStore(<LoginForm onSubmit={ onSubmit } />)
-  const { password, form } = fields(container)
+  const { user, password, form } = fields(container)
 
   fireEvent.change(password, { target: { value: 'secret' } })
   fireEvent.submit(form)
 
-  expect(onSubmit).toHaveBeenCalledWith({ password: 'secret' })
-  expect(errorTexts(container)).toEqual([])
+  expect(onSubmit).not.toHaveBeenCalled()
+  expect(errorTexts(container)).toEqual(['Required'])
+  expect(user.parentElement.querySelector('span').textContent).toBe('Required')
 })

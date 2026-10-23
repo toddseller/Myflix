@@ -12,14 +12,12 @@ const FIELDS = [
 const LoginForm = ({ onSubmit }) => {
   const [values, setValues] = useState({})
   const [touched, setTouched] = useState({})
-  // As redux-form did, only errors for this form's own fields count.
   const errors = validate(values)
-  const fieldError = name => FIELDS.some(f => f.name === name) ? errors[name] : undefined
 
   const handleSubmit = e => {
     e.preventDefault()
     setTouched(Object.fromEntries(FIELDS.map(f => [f.name, true])))
-    if (FIELDS.every(f => !fieldError(f.name))) {
+    if (FIELDS.every(f => !errors[f.name])) {
       onSubmit(values)
     }
   }
@@ -32,7 +30,7 @@ const LoginForm = ({ onSubmit }) => {
       onBlur: () => setTouched({ ...touched, [name]: true }),
       ...(type === 'checkbox' ? { checked: !!values[name] } : { value: values[name] || '' })
     }
-    return <RenderField input={ input } label={ label } type={ type } meta={ { touched: touched[name], error: fieldError(name) } } />
+    return <RenderField input={ input } label={ label } type={ type } meta={ { touched: touched[name], error: errors[name] } } />
   }
 
   const [user, password, remember] = FIELDS
