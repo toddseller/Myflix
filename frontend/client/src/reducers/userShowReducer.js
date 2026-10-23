@@ -1,11 +1,11 @@
-import _ from 'lodash'
+import mapKeys from 'lodash/mapKeys'
 
 export default (state = {}, action) => {
   switch (action.type) {
     case 'FETCH_SHOWS':
       return {
         ...state,
-        ..._.mapKeys(action.payload, 'id')
+        ...mapKeys(action.payload, 'id')
       }
     case 'FETCH_SHOW':
       return { ...state, [action.payload.id]: action.payload }
