@@ -1,12 +1,12 @@
 import React from 'react'
-import { act } from 'react-dom/test-utils'
+import { act } from 'react'
 
 import AppRouter, { history } from './AppRouter'
 import configureStore from '../store/configureStore'
 import { fetchHomePage } from '../actions/homePage'
 import { renderWithStore } from '../testing/render'
 
-jest.mock('../apis/mmdb', () => ({ __esModule: true, default: { get: jest.fn(() => new Promise(() => {})) } }))
+vi.mock('../apis/mmdb', () => ({ default: { get: vi.fn(() => new Promise(() => {})) } }))
 
 const renderAt = path => {
   const store = configureStore()

@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 
 import AppRouter, { history } from './routers/AppRouter'
@@ -16,16 +16,9 @@ const jsx = (
     <AppRouter />
   </Provider>
 )
-let hasRendered = false
-const renderApp = () => {
-  if (!hasRendered) {
-    ReactDOM.render(jsx, document.getElementById('root'))
-    hasRendered = true
-  }
-}
-
-ReactDOM.render(<LoadingPage />, document.getElementById('root'))
+const root = createRoot(document.getElementById('root'))
+root.render(<LoadingPage />)
 
 store.dispatch(getHomePageData()).then(() => {
-  renderApp()
+  root.render(jsx)
 })

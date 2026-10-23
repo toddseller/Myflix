@@ -1,16 +1,14 @@
 import React from 'react'
-import { act, Simulate } from 'react-dom/test-utils'
+import { fireEvent } from '@testing-library/react'
 
 import mmdb from '../../apis/mmdb'
 import SearchBox from './SearchBox'
 import { renderWithStore } from '../../testing/render'
 
-jest.mock('../../apis/mmdb', () => ({ __esModule: true, default: { get: jest.fn(() => new Promise(() => {})) } }))
-
-const step = event => act(() => { event() })
+vi.mock('../../apis/mmdb', () => ({ default: { get: vi.fn(() => new Promise(() => {})) } }))
 
 const setup = () => {
-  const props = { isLoading: jest.fn(), onClick: jest.fn() }
+  const props = { isLoading: vi.fn(), onClick: vi.fn() }
   const { container, store } = renderWithStore(<SearchBox { ...props } />)
   const buttons = container.querySelectorAll('button')
   return { container, store, props, input: container.querySelector('input[name="search"]'), toggle: buttons[0], submit: buttons[1], form: container.querySelector('form') }
@@ -32,21 +30,21 @@ it('opens on the toggle button and reports loading', () => {
   const { container, toggle, props } = setup()
   const width = () => container.firstChild.style.width
   expect(width()).toBe('45px')
-  step(() => Simulate.click(toggle))
+  fireEvent.click(toggle)
   expect(width()).toBe('345px')
   expect(props.isLoading).toHaveBeenCalledTimes(1)
 })
 
 it('filters as you type', () => {
   const { input, store } = setup()
-  step(() => Simulate.change(input, { target: { value: 'dark' } }))
+  fireEvent.change(input, { target: { value: 'dark' } })
   expect(store.getState().filters.text).toBe('dark')
 })
 
 it('searches for new movies on submit', () => {
   const { input, form, props } = setup()
-  step(() => Simulate.change(input, { target: { value: 'dark' } }))
-  step(() => Simulate.submit(form))
+  fireEvent.change(input, { target: { value: 'dark' } })
+  fireEvent.submit(form)
   expect(props.onClick).toHaveBeenCalledTimes(1)
   expect(mmdb.get).toHaveBeenCalledWith('/add_movie', expect.objectContaining({ params: { query: 'dark' } }))
 })
