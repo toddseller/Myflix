@@ -18,18 +18,18 @@ Code tasks are test-first: write the test, run it and see it fail for the right 
 
 ## 4. Server cutover (after merging)
 
-- [ ] 4.1 With your go-ahead, move `~/myflix` to `~/myflix-before-deploy-by-tag`, clone the repo over HTTPS into `~/myflix`, tag the running image as `myflix-nginx:previous` (the first release is likely a redeploy of the same commit, which keeps none), run `docker compose up -d --build`, and check myflix.stream serves the merged bundle
+- [x] 4.1 With your go-ahead, move `~/myflix` to `~/myflix-before-deploy-by-tag`, clone the repo over HTTPS into `~/myflix`, tag the running image as `myflix-nginx:previous` (the first release is likely a redeploy of the same commit, which keeps none), run `docker compose up -d --build`, and check myflix.stream serves the merged bundle
 
 ## 5. Access and secrets
 
-- [ ] 5.1 **(owner)** Cloudflare: add the route `ssh-deploy.myflix.stream` to `ssh://192.168.40.63:22` on `myflix-tunnel`, and a self-hosted Access application for it with a Service Auth policy and a new service token `myflix-deploy`; I check the hostname answers through Access
-- [ ] 5.2 **(owner)** Generate the deploy key on your Mac and add its forced-command line to onyx's `authorized_keys`; I check over the LAN that the key runs only `bin/deploy` and refuses a shell
-- [ ] 5.3 Build the `DEPLOY_KNOWN_HOSTS` value from `ssh-keyscan` for `ssh-deploy.myflix.stream`
-- [ ] 5.4 **(owner)** GitHub: create the `production` environment limited to `v*` tags, add its five secrets, and add the tag ruleset on `refs/tags/v*` (restrict creation, block update and deletion, owner bypass); I check the environment and ruleset through the API
+- [x] 5.1 **(owner)** Cloudflare: add the route `ssh-deploy.myflix.stream` to `ssh://192.168.40.63:22` on `myflix-tunnel`, and a self-hosted Access application for it with a Service Auth policy and a new service token `myflix-deploy`; I check the hostname answers through Access
+- [x] 5.2 **(owner)** Generate the deploy key on your Mac and add its forced-command line to onyx's `authorized_keys`; I check over the LAN that the key runs only `bin/deploy` and refuses a shell
+- [x] 5.3 Build the `DEPLOY_KNOWN_HOSTS` value from `ssh-keyscan` for `ssh-deploy.myflix.stream`
+- [x] 5.4 **(owner)** GitHub: create the `production` environment limited to `v*` tags, add its five secrets, and add the tag ruleset on `refs/tags/v*` (restrict creation, block update and deletion, owner bypass); I check the environment and ruleset through the API
 
 ## 6. First release
 
-- [ ] 6.1 **(owner)** Publish a release tagged `v2026.11.<day>` on `master` in GitHub's web UI; together we watch the Deploy run, then I check myflix.stream serves that commit's bundle and that `myflix-nginx:previous` exists
+- [x] 6.1 **(owner)** Publish a release tagged `v2026.11.<day>` on `master` in GitHub's web UI; together we watch the Deploy run, then I check myflix.stream serves that commit's bundle and that `myflix-nginx:previous` exists
 
 ## Workflow follow-up
 
