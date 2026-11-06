@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Deploys a version tag of Myflix on the production server. The deploy key's authorized_keys entry
+# forces this script, so the only request it takes over SSH is "deploy <tag>".
+set -euo pipefail
+
+TAG_FORMAT='^v[0-9]+(\.[0-9]+)*$'
+# Compose names the image after the folder (myflix) and the service (nginx).
+IMAGE=myflix-nginx
+
+refuse() {
+  echo "deploy: $1" >&2
+  exit "${2:-1}"
+}
+
+main() {
+  local verb tag extra
+  # sshd puts the client's command here and ignores what the key's holder asked to run.
+  if [[ -n "${SSH_ORIGINAL_COMMAND:-}" ]]; then
+    read -r verb tag extra <<< "$SSH_ORIGINAL_COMMAND"
+  else
+    verb="${1:-}" tag="${2:-}" extra="${3:-}"
+  fi
+  [[ "$verb" == deploy && -z "$extra" ]] || refuse 'usage: deploy <tag>' 2
+  [[ "$tag" =~ $TAG_FORMAT ]] || refuse "not a version tag: $tag" 2
+
+  cd "$(dirname "${BASH_SOURCE[0]}")/.."
+  [[ -z "$(git status --porcelain --untracked-files=no)" ]] || refuse 'the server checkout has uncommitted changes'
+  [[ "$(git rev-parse --abbrev-ref HEAD)" == master ]] || refuse 'the server checkout is not on master'
+
+  # No "+" on the tag refspec: a tag that was moved since the last fetch is rejected, not followed.
+  git fetch --quiet origin master "refs/tags/$tag:refs/tags/$tag" || refuse "could not fetch $tag"
+  local old new
+  old="$(git rev-parse HEAD)"
+  new="$(git rev-parse "$tag^{commit}")"
+  git merge-base --is-ancestor "$new" origin/master || refuse "$tag is not on master"
+  if [[ "$new" != "$old" ]]; then
+    git merge-base --is-ancestor "$old" "$new" || refuse "$tag is behind the server, which is at ${old:0:7}"
+    git merge --quiet --ff-only "$new"
+  fi
+
+  if [[ "$new" == "$old" ]]; then
+    # Not kept on a redeploy: the running image is this release's, and keeping it would drop the one before it.
+    echo "Redeploying $tag (${new:0:7}), already checked out"
+  else
+    echo "Deploying $tag: ${old:0:7} -> ${new:0:7}"
+    # The running image is kept, so the last release can be restored without a build; tagging replaces the one kept
+    # by the deploy before.
+    if docker image inspect "$IMAGE:latest" > /dev/null 2>&1; then
+      docker tag "$IMAGE:latest" "$IMAGE:previous"
+    fi
+  fi
+
+  # The built site is baked into the image, so every deploy rebuilds.
+  docker compose up -d --build
+
+  local url="${DEPLOY_HEALTH_URL:-https://myflix.stream/}" tries="${DEPLOY_HEALTH_TRIES:-10}" interval="${DEPLOY_HEALTH_INTERVAL:-3}"
+  local attempt code
+  for ((attempt = 1; attempt <= tries; attempt++)); do
+    code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "$url" || true)"
+    if [[ "$code" == 200 ]]; then
+      echo "$url answered 200: deployed $tag"
+      return 0
+    fi
+    if ((attempt < tries)); then sleep "$interval"; fi
+  done
+  refuse "$url answered ${code:-nothing} after $tries tries"
+}
+
+# Called last so bash has read the whole file before the deploy rewrites it.
+main "$@"
