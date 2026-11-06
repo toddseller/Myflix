@@ -113,12 +113,16 @@
 .movie-preview p,
 .show-preview .truncate
 {
-  transition: opacity .2s;
+  /* Closing: while fading in it is drawn above the shrinking poster, so it waits until the poster has mostly left it. */
+  transition: opacity .2s .15s;
 }
 
 .movie-preview.open p,
 .show-preview.open .truncate
 {
+  /* Opening: ends with the poster's .3s growth, which only reaches the title late. */
+  transition-delay: .1s;
+
   opacity: 0;
 }
 
