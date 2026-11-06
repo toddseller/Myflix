@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: The open poster is marked without moving its neighbours
-The poster whose drawer is open SHALL appear enlarged and lifted, with a pointer below it leading into the drawer, and the other posters SHALL keep their positions. While it is open, a movie's title SHALL be hidden, since the enlarged poster covers it, and a show's title SHALL be hidden while its seasons line stays in place under the enlarged poster. On opening, the title SHALL finish fading as the poster finishes enlarging, not before, and on closing it SHALL NOT show over the shrinking poster. A poster whose drawer is closing SHALL return to its normal size.
+The poster whose drawer is open SHALL appear enlarged and lifted, with a pointer below it leading into the drawer, and the other posters SHALL keep their positions. While it is open, a movie's title SHALL be hidden, since the enlarged poster covers it, and a show's title SHALL be hidden while its seasons line stays in place under the enlarged poster. A poster whose drawer is closing SHALL return to its normal size.
 
 #### Scenario: Poster enlarged
 - **WHEN** a movie's drawer is open
