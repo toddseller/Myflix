@@ -4,6 +4,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons'
 
 import { decodeEntities } from '../../utils/decodeEntities'
 import { HdBadge, RatingBadge } from './badges'
+import Poster from './Poster'
 
 // MMDb's split: a comma followed by " Jr." belongs to the name before it.
 const names = text => decodeEntities(text).split(/(?<!,),(?!\sJr\.)/).map(name => name.trim()).filter(Boolean)
@@ -38,7 +39,7 @@ export default function MovieDetails({ movie }) {
     <div id="meta-data">
       <div id="info-body">
         <div className="description-poster">
-          <img src={ movie.poster } alt={ `${ title } Poster` } />
+          <Poster src={ movie.poster } placeholder={ movie.poster } alt={ `${ title } Poster` } />
         </div>
         <div className="description-details">
           <h2 className="modal-title">{ title }</h2>

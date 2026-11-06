@@ -24,3 +24,9 @@ it('never turns markup in a title into elements', () => {
   expect(container.querySelector('img[src="x"]')).toBeNull()
   expect(window.__xss).toBeUndefined()
 })
+
+it('is not marked open unless told, and always has a pointer', () => {
+  const container = render('Dark')
+  expect(container.querySelector('.show-preview').classList.contains('open')).toBe(false)
+  expect(container.querySelector('.show-preview > .pointer')).not.toBeNull()
+})

@@ -76,7 +76,7 @@ class UserPage extends Component {
       return (
         <DetailDrawer key={ `drawer-${ d.rowEnd }` } open={ d === drawer }
                       onClosed={ () => this.setState(state => state.closing === d ? { closing: null } : null) }>
-          { this.props.selectedMedia === 'movies' ? <MovieDetails movie={ record } /> : <ShowDetails show={ record } /> }
+          { this.props.selectedMedia === 'movies' ? <MovieDetails movie={ record } /> : <ShowDetails key={ record.id } show={ record } /> }
         </DetailDrawer>
       )
     })
@@ -122,7 +122,7 @@ class UserPage extends Component {
           <div className={ movieClasses } ref={ this.listRef }>
             {
               movies.flatMap(movie => [
-                <MoviePreview key={ movie.id } id={ movie.id } onClick={ this.toggleDrawer } />,
+                <MoviePreview key={ movie.id } id={ movie.id } open={ this.state.drawer?.id === movie.id } onClick={ this.toggleDrawer } />,
                 ...this.drawersAfter(movie, movies)
               ])
             }
@@ -133,7 +133,7 @@ class UserPage extends Component {
           <div className={ showClasses } ref={ this.listRef }>
             {
               shows.flatMap(show => [
-                <ShowPreview key={ show.id } id={ show.id } onClick={ this.toggleDrawer } />,
+                <ShowPreview key={ show.id } id={ show.id } open={ this.state.drawer?.id === show.id } onClick={ this.toggleDrawer } />,
                 ...this.drawersAfter(show, shows)
               ])
             }

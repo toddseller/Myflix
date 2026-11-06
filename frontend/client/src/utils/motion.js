@@ -1,7 +1,7 @@
 // The longest drawer transition (.35s) plus slack, for when no transitionend arrives.
 const DRAWER_MS = 450
 
-const reduced = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+export const reduced = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
 // Runs done once, when el's transition on property ends, or after DRAWER_MS if none runs. Returns a cancel.
 export const afterTransition = (el, property, done) => {

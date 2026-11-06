@@ -90,3 +90,8 @@ it('decodes entities in every text it shows', () => {
   show({ genre: 'Action &amp; Adventure', plot: 'People&#39;s choice', actors: 'Ren&eacute;e Zellweger', director: 'Jean&#8211;Pierre Jeunet', writer: 'A &amp; B', producer: 'C &amp; D', studio: 'Fox &amp; Co' })
   for (const text of ['Action & Adventure', 'People\'s choice', 'Renée Zellweger', 'Jean–Pierre Jeunet', 'A & B', 'C & D', 'Fox & Co']) expect(screen.getByText(text)).toBeTruthy()
 })
+
+it('shows the grid poster behind the drawer\'s poster until it loads', () => {
+  show()
+  expect(screen.getByRole('img', { name: 'Fargo Poster' }).style.backgroundImage).toBe('url("fargo.jpg")')
+})
