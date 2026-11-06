@@ -1,0 +1,72 @@
+.settings
+{
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 148px 16px 4rem;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.settings h1
+{
+  margin: 0 0 .5rem;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.settings-avatar
+{
+  border-radius: 3px;
+  object-fit: cover;
+  background: #333333;
+}
+
+.settings label
+{
+  font-size: 1rem;
+}
+
+.settings input[type="file"]
+{
+  color: #b3b3b3;
+  font: inherit;
+}
+
+.settings input[type="file"]:focus-visible,
+.settings .btn:focus-visible
+{
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.settings-actions
+{
+  display: flex;
+  gap: .75rem;
+}
+
+.settings-actions .btn
+{
+  background-color: #333333;
+  cursor: pointer;
+}
+
+.settings-actions .btn-red
+{
+  background-color: #e50914;
+}
+
+.settings-actions .btn:disabled
+{
+  opacity: .5;
+  cursor: default;
+}
+
+.settings-error
+{
+  margin: 0;
+  color: #e87c03;
+}

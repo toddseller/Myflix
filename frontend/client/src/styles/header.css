@@ -33,4 +33,67 @@
   width: 40px;
   height: 40px;
   margin-left: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  cursor: pointer;
+}
+
+.avatar img
+{
+  display: block;
+  border-radius: 3px;
+}
+
+.avatar:focus-visible
+{
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.account-menu
+{
+  position: fixed;
+  z-index: 101;
+  min-width: 11rem;
+  margin: 0;
+  padding: .5rem 0;
+  list-style: none;
+  background: rgba(0, 0, 0, .9);
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: 3px;
+}
+
+.account-menu a,
+.account-menu button
+{
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: .5rem 1rem;
+  border: 0;
+  background: none;
+  color: #ffffff;
+  font: inherit;
+  font-size: .9rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.account-menu a:hover,
+.account-menu button:hover,
+.account-menu a:focus-visible,
+.account-menu button:focus-visible
+{
+  background: rgba(255, 255, 255, .1);
+  outline: none;
+  text-decoration: underline;
+}
+
+.account-menu li:last-child
+{
+  border-top: 1px solid rgba(255, 255, 255, .15);
+  margin-top: .5rem;
+  padding-top: .5rem;
 }

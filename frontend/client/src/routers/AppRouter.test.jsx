@@ -1,13 +1,13 @@
 import React from 'react'
 import { act } from 'react'
-import { fireEvent, waitFor } from '@testing-library/react'
+import { fireEvent, screen, waitFor } from '@testing-library/react'
 
 import mmdb from '../apis/mmdb'
 import AppRouter from './AppRouter'
 import { router } from './router'
 import configureStore from '../store/configureStore'
 import { fetchHomePage } from '../actions/homePage'
-import { startLogin } from '../actions/auth'
+import { login, startLogin } from '../actions/auth'
 import { renderWithStore } from '../testing/render'
 
 vi.mock('../apis/mmdb', () => ({ default: { get: vi.fn(() => new Promise(() => {})), post: vi.fn() } }))
@@ -58,6 +58,19 @@ it('sends a signed-out visitor to sign in, before the collection loads anything'
   expect(path()).toBe('/login')
   expect(page.querySelector('.login-form-main')).not.toBeNull()
   expect(mmdb.get).not.toHaveBeenCalledWith('/movies', expect.anything())
+})
+
+it('sends a signed-out visitor from /settings to sign in', async () => {
+  const page = await renderAt('/settings')
+  expect(path()).toBe('/login')
+  expect(page.querySelector('.login-form-main')).not.toBeNull()
+})
+
+it('opens settings for a signed-in user', async () => {
+  signIn()
+  const page = await renderAt('/settings')
+  expect(path()).toBe('/settings')
+  expect(page.querySelector('.settings')).not.toBeNull()
 })
 
 it('sends an old /browse/<id> bookmark, or any other browse address, to /browse', async () => {
@@ -121,4 +134,40 @@ it('updates the header as the path changes', async () => {
   expect(signIn()).toBe(false)
   await act(() => router.navigate('/'))
   expect(signIn()).toBe(true)
+})
+
+describe('signing out', () => {
+  const signOut = async () => {
+    const stored = JSON.stringify({ token: 't', user: { id: 7, firstName: 'Ann', userName: 'ann', avatar: 'a.png' } })
+    window.localStorage.setItem('myflixUser', stored)
+    window.sessionStorage.setItem('myflixUser', stored)
+    const store = storeWithHome()
+    store.dispatch(login({ id: 7, firstName: 'Ann', userName: 'ann', avatar: 'a.png' }))
+    const page = await renderAt('/browse', store)
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Account menu' })))
+    await act(async () => fireEvent.click(screen.getByRole('menuitem', { name: 'Sign out' })))
+    return { page, store }
+  }
+
+  it('tells MMDb, clears both storages, and goes home with Sign In showing', async () => {
+    mmdb.post.mockReset().mockResolvedValue({})
+    const { page, store } = await signOut()
+    expect(mmdb.post).toHaveBeenCalledWith('/deauthenticate', null, { headers: { Authorization: 'bearer t' } })
+    expect(window.localStorage.getItem('myflixUser')).toBeNull()
+    expect(window.sessionStorage.getItem('myflixUser')).toBeNull()
+    expect(store.getState().auth.isSignedIn).toBe(false)
+    expect(path()).toBe('/')
+    expect(screen.getByRole('link', { name: 'Sign In' })).toBeDefined()
+    expect(page.querySelector('.user-nav')).toBeNull()
+    await act(() => router.navigate('/browse'))
+    expect(path()).toBe('/login')
+  })
+
+  it('signs out all the same when MMDb fails', async () => {
+    mmdb.post.mockReset().mockRejectedValue(new Error('Network Error'))
+    const { store } = await signOut()
+    expect(window.localStorage.getItem('myflixUser')).toBeNull()
+    expect(store.getState().auth.isSignedIn).toBe(false)
+    expect(path()).toBe('/')
+  })
 })
