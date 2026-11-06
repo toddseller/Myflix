@@ -311,24 +311,62 @@ describe('a turned phone', () => {
   })
 })
 
+describe('loading', () => {
+  const loadingPage = container => container.querySelector('.loading-page')
+
+  it('shows the loading page until the movies and shows have arrived', async () => {
+    let arrive
+    const get = mmdb.get.getMockImplementation()
+    mmdb.get.mockImplementation(url => url === '/shows' ? new Promise(resolve => { arrive = () => resolve({ data: shows }) }) : get(url))
+    const { container } = renderWithStore(<UserPage />)
+    await waitFor(() => expect(arrive).toBeDefined())
+    expect(loadingPage(container)).not.toBeNull()
+    await act(async () => arrive())
+    expect(loadingPage(container)).toBeNull()
+  })
+
+  it('keeps the page and the search text when a filter matches no show', async () => {
+    const { container, store } = await setup()
+    act(() => { store.dispatch(setTextFilter('zzqx')) })
+    expect(loadingPage(container)).toBeNull()
+    expect(container.querySelector('input[name="search"]').value).toBe('zzqx')
+  })
+
+  it('stays away after the search box is opened and closed', async () => {
+    const { container, store } = await setup()
+    const toggle = () => fireEvent.click(container.querySelector('.search-icon-button[type="button"]'))
+    toggle()
+    toggle()
+    act(() => { store.dispatch(setTextFilter('zzqx')) })
+    expect(loadingPage(container)).toBeNull()
+  })
+
+  it('shows the page, empty, when the shows fail to load', async () => {
+    const get = mmdb.get.getMockImplementation()
+    mmdb.get.mockImplementation(url => url === '/shows' ? Promise.reject(new Error('down')) : get(url))
+    const { container } = renderWithStore(<UserPage />)
+    await waitFor(() => expect(loadingPage(container)).toBeNull())
+    expect(container.querySelectorAll('.movie-preview')).toHaveLength(movies.length)
+  })
+})
+
 describe('search results', () => {
-  // As the search box runs a search. Its text also filters the grid, and UserPage shows its loading page while no
-  // show matches, so '5' keeps movie 5 and show 50 showing.
+  // As the search box runs a search. Its text also filters the grid, so '5' keeps movie 5 and show 50 showing.
   const search = (container, text) => {
     fireEvent.change(container.querySelector('input[name="search"]'), { target: { value: text } })
     fireEvent.submit(container.querySelector('form'))
   }
   const result = { id: 900, title: 'Dark', poster: 'dark.jpg', year: 2017, season: 1, tv_episode: 1 }
 
-  it('close and clear when a movie poster is clicked, keeping the search text', async () => {
+  it('stay when a movie poster is clicked, with its drawer open under the pinned grid', async () => {
     const { click, store, container, drawers } = await setup()
     search(container, '5')
     act(() => { store.dispatch({ type: 'FETCH_SEARCH_NEW_MOVIES', payload: [result] }) })
-    expect(container.querySelector('.movies-list').classList.contains('fixed')).toBe(true)
     click(5)
     await answer(5)
-    expect(Object.values(store.getState().newMovies)).toEqual([])
-    expect(container.querySelector('.movies-list').classList.contains('fixed')).toBe(false)
+    expect(Object.values(store.getState().newMovies)).toEqual([result])
+    expect(container.querySelector('.new-preview').classList.contains('new-preview--active')).toBe(true)
+    expect(container.querySelector('.movies-list').classList.contains('fixed')).toBe(true)
     expect(container.querySelector('input[name="search"]').value).toBe('5')
     expect(drawers()).toHaveLength(1)
   })
@@ -365,6 +403,67 @@ describe('search results', () => {
     expect(Object.values(store.getState().newEpisodes)).toEqual([])
   })
 
+  const dismissButton = container => container.querySelector('button[aria-label="Dismiss search results"]')
+  // Opened as a user would, so the search box is open when the results are dismissed.
+  const searchFromOpenBox = (container, store) => {
+    fireEvent.click(searchBoxToggle(container))
+    search(container, '5')
+    act(() => { store.dispatch({ type: 'FETCH_SEARCH_NEW_MOVIES', payload: [result] }) })
+  }
+  const expectDismissed = (container, store) => {
+    expect(panelOpen(container)).toBe(false)
+    expect(pinned(container)).toBe(false)
+    expect(Object.values(store.getState().newMovies)).toEqual([])
+    expect(container.querySelector('input[name="search"]').value).toBe('5')
+    expect(container.querySelectorAll('.movies-list .movie-preview')).toHaveLength(1)
+  }
+
+  it('offer no dismiss button without a search', async () => {
+    const { container } = await setup()
+    expect(dismissButton(container)).toBeNull()
+  })
+
+  it('close on the dismiss button, keeping the search text and the filtered grid', async () => {
+    const { container, store } = await setup()
+    searchFromOpenBox(container, store)
+    fireEvent.click(dismissButton(container))
+    expectDismissed(container, store)
+    expect(dismissButton(container)).toBeNull()
+  })
+
+  it('hand focus to the search box when the dismiss button goes, so a keyboard user keeps their place', async () => {
+    const { container, store } = await setup()
+    searchFromOpenBox(container, store)
+    dismissButton(container).focus()
+    fireEvent.click(dismissButton(container))
+    expect(document.activeElement).toBe(container.querySelector('input[name="search"]'))
+  })
+
+  it('close on Escape, keeping the search text and the filtered grid', async () => {
+    const { container, store } = await setup()
+    searchFromOpenBox(container, store)
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expectDismissed(container, store)
+  })
+
+  it('leave Escape alone when no search is open', async () => {
+    const { store } = await setup()
+    act(() => { store.dispatch({ type: 'FETCH_SEARCH_NEW_MOVIES', payload: [result] }) })
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(Object.values(store.getState().newMovies)).toEqual([result])
+  })
+
+  it('stay closed when results arrive after being dismissed mid-search', async () => {
+    const { container, store } = await setup()
+    fireEvent.click(searchBoxToggle(container))
+    search(container, '5')
+    expect(container.querySelector('.new-preview .searching-spinner')).not.toBeNull()
+    fireEvent.click(dismissButton(container))
+    act(() => { store.dispatch({ type: 'FETCH_SEARCH_NEW_MOVIES', payload: [result] }) })
+    expect(panelOpen(container)).toBe(false)
+    expect(pinned(container)).toBe(false)
+  })
+
   it('end when a movie is added from them', async () => {
     const { store, container } = await setup()
     search(container, '5')
@@ -374,7 +473,7 @@ describe('search results', () => {
     expect(pinned(container)).toBe(false)
   })
 
-  it('clear the shows and episodes found when a show poster is clicked', async () => {
+  it('keep the shows and episodes found when a show poster is clicked', async () => {
     const { store, container } = await setup()
     act(() => { store.dispatch(setSelectedMedia('tvShows')) })
     search(container, '5')
@@ -384,9 +483,10 @@ describe('search results', () => {
     })
     fireEvent.click(container.querySelector('.show-preview[id="50"] img'))
     await act(async () => pending['/shows/50'].resolve({ data: { ...show(50), seasons: [{ id: 501, season: '1', poster: '', plot: '', is_active: true, episodes: [] }] } }))
-    expect(Object.values(store.getState().newShows)).toEqual([])
-    expect(Object.values(store.getState().newEpisodes)).toEqual([])
-    expect(container.querySelector('.shows-list').classList.contains('fixed')).toBe(false)
+    expect(Object.values(store.getState().newShows)).toEqual([result])
+    expect(Object.values(store.getState().newEpisodes)).toEqual([result])
+    expect(container.querySelector('.shows-list').classList.contains('fixed')).toBe(true)
+    expect(container.querySelectorAll('.info')).toHaveLength(1)
   })
 })
 

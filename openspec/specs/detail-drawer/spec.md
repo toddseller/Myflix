@@ -357,13 +357,6 @@ When the window's width changes while a drawer is open, the drawer SHALL move to
 - **WHEN** a drawer is open and the window's height changes but not its width
 - **THEN** the drawer stays where it is
 
-### Requirement: Clicking a poster closes the search results
-When search results are showing and the user clicks a poster in the collection grid, the search results SHALL close and be cleared, so the grid can scroll to the drawer again. The text in the search box SHALL stay as it was.
-
-#### Scenario: Opening a drawer while searching
-- **WHEN** search results for "dark" are showing and the user clicks a poster in the grid
-- **THEN** the search results close, the drawer opens under the poster, and the search box still reads "dark"
-
 ### Requirement: The drawer stays smooth in large collections
 Opening, swapping, moving and closing the drawer SHALL keep frames short in a grid of thousands of posters, by not rendering tiles far from the screen. The median frame during a drawer's animation SHALL stay under 25ms in a grid of about 4,500 movies on a desktop browser.
 
