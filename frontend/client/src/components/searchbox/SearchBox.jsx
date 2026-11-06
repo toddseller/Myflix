@@ -62,35 +62,23 @@ class SearchBox extends Component {
   }
 
   onClick = () => {
-    this.setState({ isOpen: !this.state.isOpen })
+    if (this.state.isOpen) this.props.onClose()
+    this.setState({ isOpen: !this.state.isOpen, value: '' })
     this.props.isLoading()
     this.props.setTextFilter('')
-    if (this.props.filters.media === 'movies') {
-      this.setState({ value: '' })
-      this.props.clearSearchNewMovies()
-      if (this.props.newMovies.length > 1) {
-        this.props.onClick()
-      }
-    } else {
-      this.setState({ value: '' })
-      this.props.clearSearchNewShows()
-      this.props.clearSearchNewEpisodes()
-      if (this.props.newShows.length > 1) {
-        this.props.onClick()
-      }
-    }
   }
 
   handleOnSubmit = e => {
     e.preventDefault()
     e.stopPropagation()
+    this.props.onSearch()
     if (this.props.filters.media === 'movies') {
       this.props.clearSearchNewMovies()
-      this.props.onClick()
       this.props.startFetchSearchNewMovies(this.state.value)
     } else {
       this.props.clearSearchNewShows()
-      this.props.onClick()
+      // The panel shows a season's episodes ahead of show results, so the last search's season has to go.
+      this.props.clearSearchNewEpisodes()
       this.props.startFetchSearchNewShows(this.state.value)
     }
   }
@@ -123,9 +111,7 @@ class SearchBox extends Component {
 }
 
 const mapStateToProps = state => ({
-  filters: state.filters,
-  newMovies: Object.values(state.newMovies),
-  newShows: Object.values(state.newShows)
+  filters: state.filters
 })
 
 export default connect(mapStateToProps, {

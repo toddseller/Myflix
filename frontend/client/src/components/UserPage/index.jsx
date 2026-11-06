@@ -56,7 +56,11 @@ const inBlocks = (items, render, tile, columns) => {
     const rows = Math.ceil(Math.min(BLOCK, items.length - start) / columns)
     blocks.push(
       <div key={ start } className={ last ? 'grid-block grid-block--last' : 'grid-block' }
-           style={ { '--block-height': `${ rows * tile.height + (rows - 1) * ROW_GAP }px` } }>
+           style={ {
+             '--block-height': `${ rows * tile.height + (rows - 1) * ROW_GAP }px`,
+             // A drawer spans every column the block makes room for, which would pull a short row's posters left.
+             ...items.length < columns && { '--row-width': `${ items.length * tile.width + (items.length - 1) * COLUMN_GAP }px` }
+           } }>
         { items.slice(start, start + BLOCK).flatMap(render) }
       </div>
     )
@@ -81,10 +85,8 @@ class UserPage extends Component {
     this.props.setSelectedMedia(tabId)
   }
 
-  onClick = () => {
-    this.setState(prevState => {
-      return { isSearching: !prevState.isSearching }
-    })
+  openSearch = () => {
+    this.setState({ isSearching: true })
     this.props.getCounts()
   }
 
@@ -95,6 +97,12 @@ class UserPage extends Component {
     if (this.props.selectedMedia === 'movies') return this.props.clearSearchNewMovies()
     this.props.clearSearchNewShows()
     this.props.clearSearchNewEpisodes()
+  }
+
+  // Closing the search box or adding a title also refreshes the counts, which an add changes.
+  endSearch = () => {
+    this.closeSearch()
+    this.props.getCounts()
   }
 
   toggleDrawer = async id => {
@@ -231,7 +239,7 @@ class UserPage extends Component {
     const newMediaPreview = () => {
       if (selectedMedia === 'movies') {
         return newMovies.map((movie, index) => {
-          return <NewMediaPreview key={ index } media={ movie } onClick={ this.onClick } mediaType={ 'movie' } />
+          return <NewMediaPreview key={ index } media={ movie } onClick={ this.endSearch } mediaType={ 'movie' } />
         })
       } else if (selectedMedia === 'tvShows' && newEpisodes.length === 0) {
         return newShows.map((show, index) => {
@@ -239,7 +247,7 @@ class UserPage extends Component {
         })
       } else {
         return newEpisodes.map((episode, index) => {
-          return <NewMediaPreview key={ index } media={ episode } onClick={ this.onClick } mediaType={ 'tvEpisode' } />
+          return <NewMediaPreview key={ index } media={ episode } onClick={ this.endSearch } mediaType={ 'tvEpisode' } />
         })
       }
     }
@@ -255,7 +263,7 @@ class UserPage extends Component {
     return (
       <div className="user-page">
         <div className="search-bar">
-          <SearchBox onClick={ this.onClick } isLoading={ this.toggleIsLoading } />
+          <SearchBox onSearch={ this.openSearch } onClose={ this.endSearch } isLoading={ this.toggleIsLoading } />
         </div>
         <div>
           <Tabs activeTab={ selectedMedia } style={ ['default'] }>
@@ -283,7 +291,7 @@ class UserPage extends Component {
             : <ScrollRow name="results" label="results">
                 { newMediaPreview() }
                 { newEpisodes.length > 1 &&
-                <NewMediaPreview key={ 'allEpisodes' } media={ newEpisodes } onClick={ this.onClick }
+                <NewMediaPreview key={ 'allEpisodes' } media={ newEpisodes } onClick={ this.endSearch }
                                  mediaType={ 'tvEpisode' } episodeCount={ newEpisodes.length } />
                 }
               </ScrollRow>
