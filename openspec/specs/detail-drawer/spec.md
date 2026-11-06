@@ -180,6 +180,14 @@ The poster whose drawer is open SHALL appear enlarged and lifted, with a pointer
 - **WHEN** a show's drawer is open
 - **THEN** its poster is shown larger, its title is hidden, and its seasons line still shows below the poster
 
+#### Scenario: The title fades as the poster covers it
+- **WHEN** the user clicks a poster to open its drawer
+- **THEN** its title is still showing as the poster starts to enlarge, and it is gone at the moment the poster reaches its full size
+
+#### Scenario: The title returns as the poster shrinks
+- **WHEN** the user closes an open drawer
+- **THEN** the poster's title stays hidden until the shrinking poster has mostly moved off it, then fades back in, and is never drawn over the poster
+
 #### Scenario: Another poster opened
 - **WHEN** a drawer is open and the user clicks another poster
 - **THEN** the new poster is enlarged with the pointer, and the first poster is back to its normal size with its title showing
