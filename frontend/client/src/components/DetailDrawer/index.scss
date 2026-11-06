@@ -17,11 +17,13 @@
   border-bottom: 1px solid transparent;
 }
 
+/* MMDb's 20px less the space Myflix's tiles leave below their text and the grid's .5rem row gap, so the drawer
+   starts right under its row and the pointer sits as close under the poster as in MMDb. */
 .info.open
 {
   grid-template-rows: 1fr;
 
-  margin-top: 20px;
+  margin-top: -.5rem;
 
   transition: grid-template-rows .35s cubic-bezier(.2, .8, .2, 1), margin-top .35s cubic-bezier(.2, .8, .2, 1), border-color .35s;
 }
@@ -45,9 +47,8 @@
   }
 }
 
-/* The details' layout, ported from MMDb's modals.css, movies.css and responsive.css, in Myflix's colours.
-   Bootstrap's col-lg columns are grids here, stacking below 1200px as they did. */
-.info
+/* On the page rather than the drawer, so the open poster's pointer can match the drawer it points into. */
+.user-page
 {
   --surface: #090909;
   --text: #ffffff;
@@ -55,7 +56,87 @@
   --faint: rgba(255, 255, 255, .1);
   --divider: #333333;
   --accent: #e50914;
+}
 
+/* Ported from MMDb's drawer.css and movies.css. Transforms don't affect layout, so the open poster grows without
+   moving its neighbours. Its text fades, since it would sit under the enlarged poster and the drawer repeats it. */
+.movie-preview img,
+.show-preview img
+{
+  transition: transform .3s ease-in-out;
+  transform-origin: top center;
+}
+
+.movie-preview.open img,
+.show-preview.open img
+{
+  position: relative;
+  z-index: 2;
+
+  transform: translateY(-10px) scale(1.115);
+}
+
+/* The enlarged poster covers the title, so it fades rather than show as a sliver. A show keeps its seasons line. */
+.movie-preview p,
+.show-preview .truncate
+{
+  transition: opacity .2s;
+}
+
+.movie-preview.open p,
+.show-preview.open .truncate
+{
+  opacity: 0;
+}
+
+/* Its lower half is the drawer's colour, so it reads as part of the drawer; its upper edges carry the drawer's faint edge.
+   Centred on the drawer's top edge, which sits at the bottom of the tile. */
+.pointer
+{
+  position: absolute;
+  z-index: 1;
+  bottom: -8px;
+  left: 50%;
+
+  width: 15px;
+  height: 15px;
+
+  transition: opacity .2s;
+  transform: translateX(-50%) rotate(45deg);
+  pointer-events: none;
+
+  opacity: 0;
+  border: 1px solid var(--surface);
+  border-top-color: var(--faint);
+  border-left-color: var(--faint);
+  border-radius: 2px;
+  background: var(--surface);
+}
+
+.open > .pointer
+{
+  transition-delay: .15s;
+
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+  .movie-preview img,
+  .show-preview img,
+  .movie-preview p,
+  .show-preview .truncate,
+  .pointer,
+  .open > .pointer
+  {
+    transition: none;
+  }
+}
+
+/* The details' layout, ported from MMDb's modals.css, movies.css and responsive.css, in Myflix's colours.
+   Bootstrap's col-lg columns are grids here, stacking below 1200px as they did. */
+.info
+{
   font-weight: 300;
 
   color: var(--text);
@@ -133,16 +214,23 @@
 {
   margin-bottom: 30px;
 
+  /* A fixed shape, so the details don't move when the poster loads; the background holds a placeholder until then.
+     Chrome draws a failed or empty image inline as its alt text, ignoring its size, unless it is a block. */
   & img
   {
+    display: block;
+    box-sizing: border-box;
     width: 340px;
     max-width: 100%;
     height: auto;
-
-    vertical-align: top;
+    aspect-ratio: 2 / 3;
+    object-fit: contain;
 
     border-radius: 6px;
     background-color: var(--surface);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
   }
 }
 
@@ -224,9 +312,11 @@
 {
   margin-top: 20px;
 
+  /* Show posters come square or portrait, so the box is square and a portrait one fits whole inside it. */
   & > .description-poster img
   {
     width: 447px;
+    aspect-ratio: 1;
 
     border: var(--faint) 1px solid;
   }
@@ -294,12 +384,60 @@
   }
 }
 
+/* Ported from MMDb's movies.css. */
 .season-row
 {
+  position: relative;
+
+  min-width: 0;
+}
+
+/* Positioned, so each season's offsetLeft is measured from the line's start; the padding keeps a focused season clear of the arrows. */
+.season-line
+{
+  position: relative;
+
   display: flex;
   overflow-x: auto;
 
   scrollbar-width: none;
+  scroll-padding-inline: 34px;
+
+  &::-webkit-scrollbar
+  {
+    display: none;
+  }
+}
+
+.season-arrow
+{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+
+  width: 34px;
+  padding: 0;
+
+  color: var(--text);
+  border: none;
+
+  &.left
+  {
+    left: 0;
+
+    text-align: left;
+
+    background: linear-gradient(to right, var(--surface) 60%, transparent);
+  }
+
+  &.right
+  {
+    right: 0;
+
+    text-align: right;
+
+    background: linear-gradient(to left, var(--surface) 60%, transparent);
+  }
 }
 
 .season-submit

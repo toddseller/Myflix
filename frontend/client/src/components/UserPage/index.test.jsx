@@ -10,7 +10,8 @@ vi.mock('../../apis/mmdb', () => ({ default: { get: vi.fn(), defaults: { headers
 
 const movie = id => ({ id, title: `M${ id }`, sort_name: `m${ id }`, search_name: `m${ id }`, poster: `${ id }.jpg`, year: 2000 })
 const movies = [1, 2, 3, 4, 5, 6, 7].map(movie)
-const shows = [{ id: 50, title: 'S', sort_name: 's', search_name: 's', poster: 's.jpg', seasonCount: 1, seasonNumbers: '1' }]
+const show = id => ({ id, title: `S${ id }`, sort_name: `s${ id }`, search_name: `s${ id }`, poster: `s${ id }.jpg`, seasonCount: 2, seasonNumbers: '1, 2' })
+const shows = [50, 51].map(show)
 const lists = { '/movies': movies, '/shows': shows, '/counts': { moviesCount: 7, showsCount: 1, episodesCount: 1 } }
 
 // Details requests stay pending until the test answers them, so it controls the order they land in.
@@ -177,4 +178,44 @@ it('ignores details that arrive after the page has gone', async () => {
   cleanup()
   await expect(answer(5)).resolves.toBeUndefined()
   await new Promise(resolve => setTimeout(resolve))
+})
+
+it('marks the open poster, and unmarks it as its drawer closes', async () => {
+  const { click, tile } = await setup()
+  click(5)
+  await answer(5)
+  expect(tile(5).classList.contains('open')).toBe(true)
+  expect(tile(4).classList.contains('open')).toBe(false)
+  click(5)
+  expect(tile(5).classList.contains('open')).toBe(false)
+})
+
+it('moves the mark to the poster clicked next', async () => {
+  const { click, tile } = await setup()
+  click(1)
+  await answer(1)
+  click(4)
+  await answer(4)
+  expect(tile(1).classList.contains('open')).toBe(false)
+  expect(tile(4).classList.contains('open')).toBe(true)
+})
+
+it('reopens a show on its active season after the drawer has shown another', async () => {
+  const { store, container } = await setup()
+  act(() => { store.dispatch(setSelectedMedia('tvShows')) })
+  const season = (id, number, is_active = false) => ({ id, season: String(number), poster: `season${ id }.jpg`, plot: '', is_active, episodes: [] })
+  const details = id => ({ ...show(id), seasons: [season(id * 10 + 1, 1, true), season(id * 10 + 2, 2)] })
+  const openShow = async id => {
+    fireEvent.click(container.querySelector(`.show-preview[id="${ id }"] img`))
+    await act(async () => pending[`/shows/${ id }`].resolve({ data: details(id) }))
+  }
+  const drawer = () => container.querySelector('.info')
+
+  await openShow(50)
+  fireEvent.click([...drawer().querySelectorAll('.season-submit')].find(button => button.textContent === '2'))
+  await openShow(51)
+  await openShow(50)
+
+  expect(drawer().querySelector('[aria-pressed="true"]').textContent).toBe('1')
+  expect(drawer().querySelector('.description-poster img').style.backgroundImage).toBe('url("s50.jpg")')
 })

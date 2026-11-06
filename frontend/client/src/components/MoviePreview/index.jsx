@@ -8,12 +8,13 @@ class MoviePreview extends Component {
     this.props.onClick(this.props.movie.id)
   }
   render() {
-    const {movie} = this.props
+    const { movie, open } = this.props
     return (
-      <div id={ movie.id } className="movie-preview">
+      <div id={ movie.id } className={ open ? 'movie-preview open' : 'movie-preview' }>
         <img src={ movie.poster } alt={ `${ movie.title } poster` } width={ 174 } height={ 261 } loading="lazy"
              onClick={ this._onClick } />
         <p className="truncate">{ movie.isnew && <span className="new"></span> }{ movie.title }</p>
+        <div className="pointer" />
       </div>
     )
   }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 
 import mmdb from '../../apis/mmdb'
 import ShowDetails from './ShowDetails'
@@ -11,6 +11,19 @@ const season = (number, overrides) => ({ id: number, season: String(number), pos
 const show = overrides => ({ id: 9, title: 'Dark', genre: 'Drama', year: '2017', rating: 'TV-MA', hd: 1080, seasons: [season(1, { is_active: true })], ...overrides })
 
 const open = overrides => render(<ShowDetails show={ show(overrides) } />).container
+
+// jsdom does no layout: a plot is cut when its text is taller than its box, and an empty plot has no height.
+let plotsCut
+beforeAll(() => {
+  const plot = el => el.classList.contains('plot-truncate') && el.textContent ? 20 : 0
+  Object.defineProperty(HTMLElement.prototype, 'clientHeight', { configurable: true, get() { return plot(this) } })
+  Object.defineProperty(HTMLElement.prototype, 'scrollHeight', { configurable: true, get() { return plot(this) * (plotsCut ? 2 : 1) } })
+})
+afterAll(() => {
+  delete HTMLElement.prototype.clientHeight
+  delete HTMLElement.prototype.scrollHeight
+})
+beforeEach(() => { plotsCut = true })
 const pressed = () => screen.getAllByRole('button', { pressed: true }).map(button => button.textContent)
 
 it('shows the title, genre, year and badges', () => {
@@ -81,12 +94,6 @@ it('offers no "more" for an episode without a plot', () => {
   expect(screen.queryByRole('button', { name: 'more' })).toBeNull()
 })
 
-it('opens another show on its own active season when the drawer swaps to it', () => {
-  const { rerender } = render(<ShowDetails show={ show({ seasons: [season(1, { is_active: true }), season(2)] }) } />)
-  fireEvent.click(screen.getByRole('button', { name: '2' }))
-  rerender(<ShowDetails show={ show({ id: 10, title: 'Lost', seasons: [season(30), season(31, { is_active: true })] }) } />)
-  expect(pressed()).toEqual(['31'])
-})
 
 it('decodes entities in the title', () => {
   open({ title: 'Law &amp; Order' })
@@ -101,4 +108,145 @@ it('decodes entities in every text it shows', () => {
   expect(screen.getByText('Action & Adventure')).toBeTruthy()
   expect(container.querySelector('.season-plot').textContent).toBe('A whip–smart coder')
   expect(container.querySelector('.plot-truncate').textContent).toBe('People\'s wants')
+})
+
+describe('the poster placeholder', () => {
+  const poster = container => container.querySelector('.description-poster img')
+
+  it('is the grid poster when the drawer opens', () => {
+    const container = open({ poster: 'dark.jpg' })
+    expect(poster(container).getAttribute('src')).toBe('s1.jpg')
+    expect(poster(container).style.backgroundImage).toBe('url("dark.jpg")')
+  })
+
+  it('is the previous season\'s poster after a season switch', () => {
+    const container = open({ poster: 'dark.jpg', seasons: [season(1, { is_active: true }), season(2)] })
+    fireEvent.click(screen.getByRole('button', { name: '2' }))
+    expect(poster(container).getAttribute('src')).toBe('s2.jpg')
+    expect(poster(container).style.backgroundImage).toBe('url("s1.jpg")')
+  })
+
+  it('is left out for a season with no poster', () => {
+    const container = open({ poster: 'dark.jpg', seasons: [season(1, { is_active: true }), season(2, { poster: '' })] })
+    fireEvent.click(screen.getByRole('button', { name: '2' }))
+    expect(poster(container).style.backgroundImage).toBe('')
+  })
+})
+
+describe('the season line', () => {
+  const SEASON = 40
+  const ARROW = 34
+  let lineWidth
+  const scrolled = new WeakMap()
+  const stubs = {
+    clientWidth: { get() { return this.classList.contains('season-line') ? lineWidth : 0 } },
+    scrollWidth: { get() { return this.classList.contains('season-line') ? this.children.length * SEASON : 0 } },
+    offsetLeft: { get() { return this.classList.contains('season-submit') ? [...this.parentElement.children].indexOf(this) * SEASON : 0 } },
+    offsetWidth: { get() { return this.classList.contains('season-submit') ? SEASON : 0 } },
+    scrollLeft: { get() { return scrolled.get(this) ?? 0 }, set(value) { scrolled.set(this, value) } }
+  }
+  const originals = {}
+  beforeAll(() => {
+    for (const [name, stub] of Object.entries(stubs)) {
+      originals[name] = Object.getOwnPropertyDescriptor(Element.prototype, name) ?? Object.getOwnPropertyDescriptor(HTMLElement.prototype, name)
+      Object.defineProperty(HTMLElement.prototype, name, { configurable: true, ...stub })
+    }
+    HTMLElement.prototype.scrollBy = vi.fn()
+  })
+  afterAll(() => {
+    for (const name of Object.keys(stubs)) delete HTMLElement.prototype[name]
+    delete HTMLElement.prototype.scrollBy
+  })
+  beforeEach(() => {
+    lineWidth = 1000
+    HTMLElement.prototype.scrollBy.mockClear()
+  })
+
+  const longShow = (active, overrides) => show({ seasons: Array.from({ length: 48 }, (_, i) => season(i + 1, { is_active: i + 1 === active })), ...overrides })
+  const line = container => container.querySelector('.season-line')
+  const arrows = () => screen.queryAllByRole('button', { name: /seasons$/ }).map(button => button.getAttribute('aria-label'))
+
+  it('shows no arrows when every season fits', () => {
+    open({ seasons: [season(1, { is_active: true }), season(2), season(3)] })
+    expect(arrows()).toEqual([])
+  })
+
+  it('opens at its start when the active season fits there, with only the right arrow', () => {
+    const container = render(<ShowDetails show={ longShow(3) } />).container
+    expect(line(container).scrollLeft).toBe(0)
+    expect(arrows()).toEqual(['Later seasons'])
+  })
+
+  it('opens with a late active season in view, clear of the right arrow', () => {
+    const container = render(<ShowDetails show={ longShow(48) } />).container
+    expect(line(container).scrollLeft).toBe(48 * SEASON - 1000)
+    expect(arrows()).toEqual(['Earlier seasons'])
+  })
+
+  it('places the active season just clear of the right arrow', () => {
+    const container = render(<ShowDetails show={ longShow(30) } />).container
+    expect(line(container).scrollLeft).toBe(30 * SEASON + ARROW - 1000)
+    expect(arrows()).toEqual(['Earlier seasons', 'Later seasons'])
+  })
+
+  it('shows its arrows however the line is scrolled', () => {
+    const container = render(<ShowDetails show={ longShow(1) } />).container
+    line(container).scrollLeft = 400
+    fireEvent.scroll(line(container))
+    expect(arrows()).toEqual(['Earlier seasons', 'Later seasons'])
+  })
+
+  it('updates its arrows when the window resizes', () => {
+    open({ seasons: [season(1, { is_active: true }), season(2), season(3)] })
+    lineWidth = 100
+    act(() => { window.dispatchEvent(new Event('resize')) })
+    expect(arrows()).toEqual(['Later seasons'])
+  })
+
+  it('glides one visible width per arrow click', () => {
+    const container = render(<ShowDetails show={ longShow(30) } />).container
+    fireEvent.click(screen.getByRole('button', { name: 'Later seasons' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Earlier seasons' }))
+    expect(line(container).scrollBy.mock.calls).toEqual([[{ left: 1000, behavior: 'smooth' }], [{ left: -1000, behavior: 'smooth' }]])
+  })
+
+  it('jumps instead of gliding when motion is reduced', () => {
+    window.matchMedia = query => ({ matches: query === '(prefers-reduced-motion: reduce)' })
+    try {
+      const container = render(<ShowDetails show={ longShow(1) } />).container
+      fireEvent.click(screen.getByRole('button', { name: 'Later seasons' }))
+      expect(line(container).scrollBy).toHaveBeenCalledWith({ left: 1000, behavior: 'auto' })
+    } finally {
+      delete window.matchMedia
+    }
+  })
+
+  it('stays put when the user switches seasons', () => {
+    const container = render(<ShowDetails show={ longShow(1) } />).container
+    line(container).scrollLeft = 760
+    fireEvent.click(screen.getByRole('button', { name: '20' }))
+    expect(line(container).scrollLeft).toBe(760)
+  })
+
+})
+
+describe('"more"', () => {
+  it('is not offered for a plot that fits', () => {
+    plotsCut = false
+    open()
+    expect(screen.queryByRole('button', { name: 'more' })).toBeNull()
+  })
+
+  it('is offered for a plot that is cut short', () => {
+    open()
+    expect(screen.getByRole('button', { name: 'more' })).toBeTruthy()
+  })
+
+  it('appears when the window narrows until the plot is cut', () => {
+    plotsCut = false
+    open()
+    plotsCut = true
+    act(() => { window.dispatchEvent(new Event('resize')) })
+    expect(screen.getByRole('button', { name: 'more' })).toBeTruthy()
+  })
 })
