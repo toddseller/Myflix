@@ -58,6 +58,27 @@
   --accent: #e50914;
 }
 
+/* Thousands of tiles made every drawer frame slow; tiles far from the screen are skipped, keeping their fixed size so
+   nothing moves. Scoped to the grids, since the search panel's cards reuse these class names. */
+.movies-list .movie-preview
+{
+  content-visibility: auto;
+  contain-intrinsic-size: 174px 303px;
+}
+
+.shows-list .show-preview
+{
+  content-visibility: auto;
+  contain-intrinsic-size: 200px 260px;
+}
+
+/* content-visibility clips a tile to its box, and the open tile draws outside it: the enlarged poster and the pointer. */
+.movies-list .movie-preview.open,
+.shows-list .show-preview.open
+{
+  content-visibility: visible;
+}
+
 /* Ported from MMDb's drawer.css and movies.css. Transforms don't affect layout, so the open poster grows without
    moving its neighbours. Its text fades, since it would sit under the enlarged poster and the drawer repeats it. */
 .movie-preview img,
