@@ -5,8 +5,15 @@ import mmdb from '../../apis/mmdb'
 import { renderWithStore } from '../../testing/render'
 import { setSelectedMedia, setTextFilter } from '../../actions/filters'
 import UserPage from './index'
+import { holdStill, reveal } from '../../utils/motion'
 
 vi.mock('../../apis/mmdb', () => ({ default: { get: vi.fn(), defaults: { headers: { common: {} } } } }))
+// The glide's maths is tested in utils/motion.test.js; here, only when and how the page asks for it.
+vi.mock('../../utils/motion', async importOriginal => ({
+  ...await importOriginal(),
+  reveal: vi.fn(),
+  holdStill: vi.fn((tile, top, done) => done())
+}))
 
 const movie = id => ({ id, title: `M${ id }`, sort_name: `m${ id }`, search_name: `m${ id }`, poster: `${ id }.jpg`, year: 2000 })
 const movies = [1, 2, 3, 4, 5, 6, 7].map(movie)
@@ -19,7 +26,8 @@ let pending
 const answer = (id, data = { ...movie(id), plot: `Plot ${ id }` }) => act(async () => pending[`/movies/${ id }`].resolve({ data }))
 const fail = id => act(async () => pending[`/movies/${ id }`].reject(new Error('down')))
 
-// jsdom does no layout: tiles sit three to a row, and a drawer is on a line of its own.
+// jsdom does no layout: tiles sit perRow to a row, and a drawer is on a line of its own.
+let perRow = 3
 const offsetTop = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetTop')
 beforeAll(() => {
   Object.defineProperty(HTMLElement.prototype, 'offsetTop', {
@@ -27,7 +35,7 @@ beforeAll(() => {
     get() {
       if (this.classList.contains('info')) return -1
       const tiles = [...this.parentElement.children].filter(el => !el.classList.contains('info'))
-      return Math.floor(tiles.indexOf(this) / 3) * 300
+      return Math.floor(tiles.indexOf(this) / perRow) * 300
     }
   })
 })
@@ -218,4 +226,124 @@ it('reopens a show on its active season after the drawer has shown another', asy
 
   expect(drawer().querySelector('[aria-pressed="true"]').textContent).toBe('1')
   expect(drawer().querySelector('.description-poster img').style.backgroundImage).toBe('url("s50.jpg")')
+})
+
+it('opens a fresh drawer in the row of one that is still closing', async () => {
+  const { click, drawers } = await setup()
+  click(1)
+  await answer(1)
+  click(1)
+  const closing = drawers()[0]
+  click(2)
+  await answer(2)
+  expect(drawers()).toHaveLength(2)
+  const opened = drawers().find(drawer => drawer !== closing)
+  expect(opened.querySelector('h2').textContent).toBe('M2')
+  closeTransition(closing)
+  expect(drawers()).toEqual([opened])
+})
+
+describe('the glide', () => {
+  beforeEach(() => {
+    reveal.mockClear()
+    holdStill.mockClear()
+  })
+
+  it('brings a new drawer into view, gliding up if it must', async () => {
+    const { click, drawers } = await setup()
+    click(5)
+    await answer(5)
+    expect(reveal).toHaveBeenCalledWith(drawers()[0], { up: true })
+    expect(holdStill).not.toHaveBeenCalled()
+  })
+
+  it('aims at the eased height on a same-row swap, gliding down only', async () => {
+    const { click, drawers } = await setup()
+    click(4)
+    await answer(4)
+    reveal.mockClear()
+    click(5)
+    await answer(5)
+    expect(reveal).toHaveBeenCalledWith(drawers()[0], { height: expect.any(Number) })
+  })
+
+  it('holds the clicked poster still on a move to another row, then glides', async () => {
+    const { click, tile, drawers } = await setup()
+    click(1)
+    await answer(1)
+    reveal.mockClear()
+    click(4)
+    await answer(4)
+    expect(holdStill).toHaveBeenCalledWith(tile(4), expect.any(Number), expect.any(Function))
+    const opened = drawers().find(drawer => drawer.querySelector('h2').textContent === 'M4')
+    expect(reveal).toHaveBeenCalledWith(opened, { up: true })
+  })
+})
+
+describe('a turned phone', () => {
+  const resize = width => act(() => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, writable: true, value: width })
+    window.dispatchEvent(new Event('resize'))
+  })
+  afterEach(() => { perRow = 3 })
+
+  it('moves the open drawer under its poster\'s new row, keeping its element', async () => {
+    const { click, tile, drawers } = await setup()
+    click(5)
+    await answer(5)
+    const drawer = drawers()[0]
+    expect(tile(6).nextElementSibling).toBe(drawer)
+    perRow = 4
+    resize(window.innerWidth + 100)
+    expect(drawers()).toEqual([drawer])
+    expect(tile(7).nextElementSibling).toBe(drawer)
+    expect(drawer.querySelector('h2').textContent).toBe('M5')
+  })
+
+  it('leaves the drawer alone when only the height changes', async () => {
+    const { click, tile, drawers } = await setup()
+    click(5)
+    await answer(5)
+    perRow = 4
+    act(() => { window.dispatchEvent(new Event('resize')) })
+    expect(tile(6).nextElementSibling).toBe(drawers()[0])
+  })
+})
+
+describe('search results', () => {
+  // As the search box runs a search. Its text also filters the grid, and UserPage shows its loading page while no
+  // show matches, so '5' keeps movie 5 and show 50 showing.
+  const search = (container, text) => {
+    fireEvent.change(container.querySelector('input[name="search"]'), { target: { value: text } })
+    fireEvent.submit(container.querySelector('form'))
+  }
+  const result = { id: 900, title: 'Dark', poster: 'dark.jpg', year: 2017, season: 1, tv_episode: 1 }
+
+  it('close and clear when a movie poster is clicked, keeping the search text', async () => {
+    const { click, store, container, drawers } = await setup()
+    search(container, '5')
+    act(() => { store.dispatch({ type: 'FETCH_SEARCH_NEW_MOVIES', payload: [result] }) })
+    expect(container.querySelector('.movies-list').classList.contains('fixed')).toBe(true)
+    click(5)
+    await answer(5)
+    expect(Object.values(store.getState().newMovies)).toEqual([])
+    expect(container.querySelector('.movies-list').classList.contains('fixed')).toBe(false)
+    expect(container.querySelector('input[name="search"]').value).toBe('5')
+    expect(drawers()).toHaveLength(1)
+  })
+
+  it('clear the shows and episodes found when a show poster is clicked', async () => {
+    const { store, container } = await setup()
+    act(() => { store.dispatch(setSelectedMedia('tvShows')) })
+    search(container, '5')
+    act(() => {
+      store.dispatch({ type: 'FETCH_SEARCH_NEW_SHOWS', payload: [result] })
+      store.dispatch({ type: 'FETCH_SEARCH_NEW_EPISODES', payload: [result] })
+    })
+    fireEvent.click(container.querySelector('.show-preview[id="50"] img'))
+    await act(async () => pending['/shows/50'].resolve({ data: { ...show(50), seasons: [{ id: 501, season: '1', poster: '', plot: '', is_active: true, episodes: [] }] } }))
+    expect(Object.values(store.getState().newShows)).toEqual([])
+    expect(Object.values(store.getState().newEpisodes)).toEqual([])
+    expect(container.querySelector('.shows-list').classList.contains('fixed')).toBe(false)
+  })
 })

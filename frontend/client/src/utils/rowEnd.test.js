@@ -26,3 +26,10 @@ it('stops at a drawer that follows the row', () => {
   const tiles = grid([0, 0, 320, 600, 600])
   expect(rowEnd(tiles[0]).id).toBe('t1')
 })
+
+it('steps over a hidden drawer in the middle of a row', () => {
+  const tiles = grid([300, 300, 300, 600])
+  const drawer = Object.assign(document.createElement('div'), { className: 'info' })
+  tiles[1].after(drawer)
+  expect(rowEnd(tiles[0]).id).toBe('t2')
+})
