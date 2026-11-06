@@ -16,8 +16,8 @@
   grid-template-columns: repeat(auto-fit, 200px);
   justify-content: center;
   /* Blocks span the page, keeping their tiles to the middle 1560px: content-visibility clips a block to its box, and
-     the drawer inside it reaches out to the window's edges. */
-  padding-inline: max(0px, calc((100% - 1560px) / 2));
+     the drawer inside it reaches out to the window's edges. A short row narrows to its posters (--row-width). */
+  padding-inline: max(0px, calc((100% - var(--row-width, 1560px)) / 2));
 
   content-visibility: auto;
   contain-intrinsic-height: auto var(--block-height);

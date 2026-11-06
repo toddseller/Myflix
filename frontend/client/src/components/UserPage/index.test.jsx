@@ -7,7 +7,7 @@ import { setSelectedMedia, setTextFilter } from '../../actions/filters'
 import UserPage from './index'
 import { holdStill, reveal } from '../../utils/motion'
 
-vi.mock('../../apis/mmdb', () => ({ default: { get: vi.fn(), defaults: { headers: { common: {} } } } }))
+vi.mock('../../apis/mmdb', () => ({ default: { get: vi.fn(), post: vi.fn(() => new Promise(() => {})), defaults: { headers: { common: {} } } } }))
 // The glide's maths is tested in utils/motion.test.js; here, only when and how the page asks for it.
 vi.mock('../../utils/motion', async importOriginal => ({
   ...await importOriginal(),
@@ -333,6 +333,47 @@ describe('search results', () => {
     expect(drawers()).toHaveLength(1)
   })
 
+  const panelOpen = container => container.querySelector('.new-preview').classList.contains('new-preview--active')
+  const pinned = container => container.querySelector('.movies-list').classList.contains('fixed')
+  const searchBoxToggle = container => container.querySelector('.search-icon-button[type="button"]')
+
+  it.each([0, 1])('end when the search box closes after %i results', async count => {
+    const { store, container } = await setup()
+    fireEvent.click(searchBoxToggle(container))
+    search(container, '5')
+    act(() => { store.dispatch({ type: 'FETCH_SEARCH_NEW_MOVIES', payload: Array(count).fill(result) }) })
+    expect(panelOpen(container)).toBe(true)
+    fireEvent.click(searchBoxToggle(container))
+    expect(panelOpen(container)).toBe(false)
+    expect(pinned(container)).toBe(false)
+  })
+
+  it('stay open for a second search', async () => {
+    const { container } = await setup()
+    search(container, '5')
+    search(container, '5')
+    expect(panelOpen(container)).toBe(true)
+  })
+
+  it('show a new show search in place of the season picked from the last one', async () => {
+    const { store, container } = await setup()
+    act(() => {
+      store.dispatch(setSelectedMedia('tvShows'))
+      store.dispatch({ type: 'FETCH_SEARCH_NEW_EPISODES', payload: [result] })
+    })
+    search(container, '5')
+    expect(Object.values(store.getState().newEpisodes)).toEqual([])
+  })
+
+  it('end when a movie is added from them', async () => {
+    const { store, container } = await setup()
+    search(container, '5')
+    act(() => { store.dispatch({ type: 'FETCH_SEARCH_NEW_MOVIES', payload: [result] }) })
+    fireEvent.click(container.querySelector('.new-preview img'))
+    expect(panelOpen(container)).toBe(false)
+    expect(pinned(container)).toBe(false)
+  })
+
   it('clear the shows and episodes found when a show poster is clicked', async () => {
     const { store, container } = await setup()
     act(() => { store.dispatch(setSelectedMedia('tvShows')) })
@@ -429,6 +470,32 @@ describe('blocks of tiles', () => {
     expect(commits).not.toHaveBeenCalled()
     resize(1500)
     expect(commits).toHaveBeenCalled()
+  })
+
+  // At 1024px the list fits 5 columns of 174px movies and 4 of 200px shows.
+  const rowWidth = container => container.querySelector('.grid-block').style.getPropertyValue('--row-width')
+
+  it('narrows a grid shorter than a row to its posters, so a drawer can\'t widen it', async () => {
+    widths(1024)
+    const { container } = await withMovies(3)
+    expect(rowWidth(container)).toBe(`${ 3 * 174 + 2 * 32 }px`)
+  })
+
+  it('narrows a single show filtered from the collection', async () => {
+    widths(1024)
+    const { container, store } = await setup()
+    act(() => {
+      store.dispatch(setSelectedMedia('tvShows'))
+      store.dispatch(setTextFilter('s50'))
+    })
+    await waitFor(() => expect(container.querySelectorAll('.show-preview')).toHaveLength(1))
+    expect(rowWidth(container)).toBe('200px')
+  })
+
+  it('leaves a grid with a full row as wide as the page allows', async () => {
+    widths(1024)
+    const { container } = await setup()
+    expect(rowWidth(container)).toBe('')
   })
 
   it('keeps a short collection in one plain block', async () => {
