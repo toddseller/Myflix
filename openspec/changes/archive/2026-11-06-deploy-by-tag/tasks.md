@@ -10,7 +10,7 @@ Code tasks are test-first: write the test, run it and see it fail for the right 
 ## 2. The workflows
 
 - [x] 2.1 Add `docker build ./frontend` and actionlint as steps of the `test` job in `test.yml`; verify actionlint passes locally on both workflows and the image builds with `DOCKER_DEFAULT_PLATFORM=linux/amd64`
-- [ ] 2.2 Add `.github/workflows/deploy.yml` (MMDb's, with Myflix's names); verify actionlint passes and the gate's tag-format, on-master and check-state logic by running its shell step locally against this repo
+- [x] 2.2 Add `.github/workflows/deploy.yml` (MMDb's, with Myflix's names); verify actionlint passes and the gate's tag-format, on-master and check-state logic by running its shell step locally against this repo
 
 ## 3. Docs
 
