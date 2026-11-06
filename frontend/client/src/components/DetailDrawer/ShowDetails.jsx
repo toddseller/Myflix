@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
 import { decodeEntities } from '../../utils/decodeEntities'
-import { easeHeight, reduced } from '../../utils/motion'
+import { easeHeight, reduced, reveal } from '../../utils/motion'
 import { HdBadge, RatingBadge } from './badges'
 import Poster from './Poster'
 
@@ -96,10 +96,14 @@ export default function ShowDetails({ show }) {
 
   const placeholder = previous ?? show.poster
 
-  const pick = (event, id) => easeHeight(event.currentTarget.closest('.info-wrapper'), () => flushSync(() => {
-    setPrevious(season.poster)
-    setPicked(id)
-  }))
+  const pick = (event, id) => {
+    const drawer = event.currentTarget.closest('.info')
+    const height = easeHeight(event.currentTarget.closest('.info-wrapper'), () => flushSync(() => {
+      setPrevious(season.poster)
+      setPicked(id)
+    }))
+    if (drawer) reveal(drawer, { height })
+  }
 
   return (
     <div id="meta-data" className="show-info">

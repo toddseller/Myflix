@@ -3,8 +3,10 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 
 import mmdb from '../../apis/mmdb'
 import ShowDetails from './ShowDetails'
+import { reveal } from '../../utils/motion'
 
 vi.mock('../../apis/mmdb', () => ({ default: { get: vi.fn() } }))
+vi.mock('../../utils/motion', async importOriginal => ({ ...await importOriginal(), reveal: vi.fn() }))
 
 const episode = (tv_episode, plot = `Plot ${ tv_episode }`) => ({ id: tv_episode, tv_episode, title: `Episode title ${ tv_episode }`, date: `2020-01-0${ tv_episode }`, runtime: '50 min', plot })
 const season = (number, overrides) => ({ id: number, season: String(number), poster: `s${ number }.jpg`, plot: `Season ${ number } plot`, is_active: false, episodes: [episode(1)], ...overrides })
@@ -248,5 +250,27 @@ describe('"more"', () => {
     plotsCut = true
     act(() => { window.dispatchEvent(new Event('resize')) })
     expect(screen.getByRole('button', { name: 'more' })).toBeTruthy()
+  })
+})
+
+describe('the glide', () => {
+  beforeEach(() => reveal.mockClear())
+
+  // As the drawer holds it, so the glide has a drawer to bring into view.
+  const inDrawer = overrides => render(
+    <div className="info"><div className="info-wrapper"><ShowDetails show={ show(overrides) } /></div></div>
+  ).container.querySelector('.info')
+
+  it('brings a season switch into view at its eased height, gliding down only', () => {
+    const drawer = inDrawer({ seasons: [season(1, { is_active: true }), season(2)] })
+    fireEvent.click(screen.getByRole('button', { name: '2' }))
+    expect(reveal).toHaveBeenCalledWith(drawer, { height: expect.any(Number) })
+  })
+
+  it('leaves the page still for "more" and "less"', () => {
+    inDrawer()
+    fireEvent.click(screen.getByRole('button', { name: 'more' }))
+    fireEvent.click(screen.getByRole('button', { name: 'less' }))
+    expect(reveal).not.toHaveBeenCalled()
   })
 })
