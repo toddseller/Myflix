@@ -14,21 +14,20 @@ import countReducer from '../reducers/countReducer'
 // The Redux DevTools browser extension, in development only.
 const composeEnhancers = (import.meta.env.DEV && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
 
-export default () => {
-  const store = createStore(
-    combineReducers({
-      auth: authReducer,
-      home: homePageReducer,
-      movies: userMovieReducer,
-      shows: userShowReducer,
-      newMovies: newMovieReducer,
-      newShows: newShowReducer,
-      newEpisodes: newEpisodeReducer,
-      filters: filtersReducer,
-      counts: countReducer
-    }),
-    composeEnhancers(applyMiddleware(thunk))
-  )
+const appReducer = combineReducers({
+  auth: authReducer,
+  home: homePageReducer,
+  movies: userMovieReducer,
+  shows: userShowReducer,
+  newMovies: newMovieReducer,
+  newShows: newShowReducer,
+  newEpisodes: newEpisodeReducer,
+  filters: filtersReducer,
+  counts: countReducer
+})
 
-  return store
-}
+// auth was read from storage when its module loaded, so resetting it would sign the user back in; home is public.
+const rootReducer = (state, action) =>
+  appReducer(action.type === 'LOGOUT' ? { auth: state.auth, home: state.home } : state, action)
+
+export default () => createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))

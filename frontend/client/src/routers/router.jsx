@@ -7,6 +7,7 @@ import Header from '../components/header/Header'
 import Login from '../components/Login'
 import Signup from '../components/Signup'
 import UserPage from '../components/UserPage'
+import Settings from '../components/Settings'
 import { setSelectedMedia } from '../actions/filters'
 
 const Layout = () => (
@@ -18,13 +19,12 @@ const Layout = () => (
   </div>
 )
 
-// Runs before the collection page renders, so a signed-out visitor never sees it or makes its requests. Only the
-// movies and shows tabs have addresses; anything else, such as an old /browse/<id> bookmark, goes to /browse.
-const browseLoader = ({ params }) => {
-  if (!window.localStorage.getItem('myflixUser') && !window.sessionStorage.getItem('myflixUser')) return redirect('/login')
-  if (!['', 'shows'].includes(params['*'])) return redirect('/browse')
-  return null
-}
+// Loaders run before a page renders, so a signed-out visitor never sees it or makes its requests.
+const requireSignIn = () =>
+  !window.localStorage.getItem('myflixUser') && !window.sessionStorage.getItem('myflixUser') ? redirect('/login') : null
+
+// Only the movies and shows tabs have addresses; anything else, such as an old /browse/<id> bookmark, goes to /browse.
+const browseLoader = ({ params }) => requireSignIn() || (['', 'shows'].includes(params['*']) ? null : redirect('/browse'))
 
 // The address owns the tab: the store follows it, before paint so a Back press never shows the old tab, and the tabs
 // change it, so a reload or bookmark keeps the tab.
@@ -44,7 +44,8 @@ export const router = createBrowserRouter([
       { path: '/', element: <HomePage /> },
       { path: '/login', element: <Login /> },
       { path: '/signup', element: <Signup /> },
-      { path: '/browse/*', loader: browseLoader, element: <BrowsePage /> }
+      { path: '/browse/*', loader: browseLoader, element: <BrowsePage /> },
+      { path: '/settings', loader: requireSignIn, element: <Settings /> }
     ]
   }
 ])

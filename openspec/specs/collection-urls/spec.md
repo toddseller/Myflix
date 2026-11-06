@@ -20,14 +20,14 @@ The signed-in user's movies SHALL be at `/browse` and their TV shows at `/browse
 - **THEN** the address is `/browse` and the Movies tab shows
 
 ### Requirement: Links to the collection use its address
-Signing in SHALL go to `/browse`, and the header's avatar link SHALL lead to `/browse`. No link SHALL put a user id in a collection address.
+Signing in SHALL go to `/browse`, and the account menu's My collection entry SHALL lead to `/browse`. No link SHALL put a user id in a collection address.
 
 #### Scenario: Signing in
 - **WHEN** a user signs in
 - **THEN** the address is `/browse`
 
 #### Scenario: Header
-- **WHEN** a signed-in user clicks their avatar in the header
+- **WHEN** a signed-in user opens the account menu from their avatar and chooses My collection
 - **THEN** they go to `/browse`
 
 ### Requirement: Other browse addresses lead to the collection

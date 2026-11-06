@@ -29,9 +29,12 @@ export default (state = initial_state, action) => {
         userName: action.payload.userName,
         avatar: action.payload.avatar
       }
+    case 'UPDATE_AVATAR':
+      return { ...state, avatar: action.avatar }
     case 'LOGOUT':
       return {
         ...state,
+        avatar: '',
         isSignedIn: false,
         userId: null,
         firstName: '',
