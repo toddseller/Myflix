@@ -8,7 +8,7 @@ export default (state = {}, action) => {
         ...mapKeys(action.payload, 'id')
       }
     case 'FETCH_MOVIE':
-      return { ...state, [action.payload.id]: action.payload }
+      return { ...state, [action.payload.id]: { ...state[action.payload.id], ...action.payload } }
     case 'ADD_MOVIE':
       return { ...state, [action.payload.id]: action.payload }
     default:

@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
+import { flushSync } from 'react-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import classnames from 'classnames'
@@ -15,12 +16,25 @@ import ShowPreview from '../ShowPreview'
 import SearchBox from '../searchbox/SearchBox'
 import NewMediaPreview from '../NewMediaPreview'
 import Tabs from '../Tabs'
+import DetailDrawer from '../DetailDrawer'
+import MovieDetails from '../DetailDrawer/MovieDetails'
+import ShowDetails from '../DetailDrawer/ShowDetails'
+import { rowEnd } from '../../utils/rowEnd'
+import { easeHeight } from '../../utils/motion'
 
 import './index.scss'
 import LoadingSpinner from '../LoadingSpinner'
 
 class UserPage extends Component {
-  state = { isSearching: false, isLoading: true }
+  state = { isSearching: false, isLoading: true, list: null, drawer: null, closing: null }
+  listRef = createRef()
+  request = 0
+
+  // A new filter, tab or title redraws the rows, so a drawer would sit under a row that no longer exists.
+  static getDerivedStateFromProps({ selectedMedia, filterText, movies, shows }, { list }) {
+    const next = `${ selectedMedia }:${ filterText }:${ movies.length }:${ shows.length }`
+    return next === list ? null : { list: next, drawer: null, closing: null }
+  }
 
   toggleSelectedButton = tabId => {
     this.props.setSelectedMedia(tabId)
@@ -33,12 +47,39 @@ class UserPage extends Component {
     this.props.getCounts()
   }
 
-  fetchMovieData = id => {
-    console.log(this.props.startFetchMovie(id))
+  toggleDrawer = async id => {
+    const request = ++this.request
+    const { drawer, list } = this.state
+    if (drawer?.id === id) return this.setState({ drawer: null, closing: drawer })
+
+    const fetchDetails = this.props.selectedMedia === 'movies' ? this.props.startFetchMovie : this.props.startFetchShow
+    try {
+      await fetchDetails(id)
+    } catch {
+      return
+    }
+    if (request !== this.request || list !== this.state.list || !this.listRef.current) return
+
+    const end = rowEnd(this.listRef.current.querySelector(`:scope > [id="${ id }"]`))
+    const open = () => this.setState(({ drawer, closing }) => ({
+      drawer: { id, rowEnd: end.id },
+      closing: drawer && drawer.rowEnd !== end.id ? drawer : closing?.rowEnd === end.id ? null : closing
+    }))
+    const sameRow = this.state.drawer?.rowEnd === end.id
+    easeHeight(sameRow && end.nextElementSibling.querySelector('.info-wrapper'), () => flushSync(open))
   }
 
-  fetchShowData = id => {
-    console.log(this.props.startFetchShow(id))
+  drawersAfter = (item, items) => {
+    const { drawer, closing } = this.state
+    return [drawer, closing].filter(d => d?.rowEnd === String(item.id)).map(d => {
+      const record = items.find(({ id }) => id === d.id)
+      return (
+        <DetailDrawer key={ `drawer-${ d.rowEnd }` } open={ d === drawer }
+                      onClosed={ () => this.setState(state => state.closing === d ? { closing: null } : null) }>
+          { this.props.selectedMedia === 'movies' ? <MovieDetails movie={ record } /> : <ShowDetails show={ record } /> }
+        </DetailDrawer>
+      )
+    })
   }
 
   toggleIsLoading = () => {
@@ -78,21 +119,23 @@ class UserPage extends Component {
     const displayList = () => {
       if (selectedMedia === 'movies') {
         return (
-          <div className={ movieClasses }>
+          <div className={ movieClasses } ref={ this.listRef }>
             {
-              movies.map(movie => {
-                return <MoviePreview key={ movie.id } id={ movie.id } onClick={ this.fetchMovieData } />
-              })
+              movies.flatMap(movie => [
+                <MoviePreview key={ movie.id } id={ movie.id } onClick={ this.toggleDrawer } />,
+                ...this.drawersAfter(movie, movies)
+              ])
             }
           </div>
         )
       } else {
         return (
-          <div className={ showClasses }>
+          <div className={ showClasses } ref={ this.listRef }>
             {
-              shows.map(show => {
-                return <ShowPreview key={ show.id } id={ show.id } onClick={ this.fetchShowData } />
-              })
+              shows.flatMap(show => [
+                <ShowPreview key={ show.id } id={ show.id } onClick={ this.toggleDrawer } />,
+                ...this.drawersAfter(show, shows)
+              ])
             }
           </div>
         )
@@ -124,7 +167,7 @@ class UserPage extends Component {
     }
 
     return (
-      <div>
+      <div className="user-page">
         <div className="search-bar">
           <SearchBox onClick={ this.onClick } isLoading={ this.toggleIsLoading } />
         </div>
@@ -174,6 +217,7 @@ const mapStateToProps = (state) => {
     showsCount: state.counts.showsCount,
     episodesCount: state.counts.episodesCount,
     selectedMedia: state.filters.media,
+    filterText: state.filters.text,
     newEpisodes: Object.values(state.newEpisodes)
   }
 }

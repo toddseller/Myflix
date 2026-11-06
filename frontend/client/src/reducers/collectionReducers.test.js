@@ -9,3 +9,13 @@ it('keys fetched movies by id and keeps the ones already loaded', () => {
 it('keys fetched shows by id', () => {
   expect(userShowReducer({}, { type: 'FETCH_SHOWS', payload: [{ id: 5, title: 'Dark' }] })).toEqual({ 5: { id: 5, title: 'Dark' } })
 })
+
+it('keeps a show tile\'s season fields when its details are fetched', () => {
+  const state = userShowReducer({ 5: { id: 5, title: 'Dark', seasonNumbers: '1, 2', seasonCount: 2 } }, { type: 'FETCH_SHOW', payload: { id: 5, title: 'Dark', seasons: [] } })
+  expect(state[5]).toEqual({ id: 5, title: 'Dark', seasonNumbers: '1, 2', seasonCount: 2, seasons: [] })
+})
+
+it('keeps a movie tile\'s fields when its details are fetched', () => {
+  const state = userMovieReducer({ 1: { id: 1, title: 'A', isnew: true } }, { type: 'FETCH_MOVIE', payload: { id: 1, title: 'A', plot: 'P' } })
+  expect(state[1]).toEqual({ id: 1, title: 'A', isnew: true, plot: 'P' })
+})

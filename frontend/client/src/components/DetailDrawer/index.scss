@@ -1,0 +1,464 @@
+/* Ported from MMDb's drawer.css. A 0fr row grows to the content's real height as it becomes 1fr, so no height has to be guessed. */
+.info
+{
+  display: grid;
+  grid-column: 1 / -1;
+  /* A plain column would grow to its widest unbreakable child, pushing the details off a narrow screen. */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 0fr;
+
+  margin-top: 0;
+  /* The grid is always centred in the window, so half the window either side of the row's centre reaches both edges. */
+  margin-inline: calc(50% - 50vw);
+
+  transition: grid-template-rows .25s ease-in, margin-top .25s ease-in, border-color .25s ease-in;
+
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+
+.info.open
+{
+  grid-template-rows: 1fr;
+
+  margin-top: 20px;
+
+  transition: grid-template-rows .35s cubic-bezier(.2, .8, .2, 1), margin-top .35s cubic-bezier(.2, .8, .2, 1), border-color .35s;
+}
+
+.info-wrapper
+{
+  overflow: hidden;
+
+  min-height: 0;
+
+  transition: height .35s cubic-bezier(.2, .8, .2, 1);
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+  .info,
+  .info.open,
+  .info-wrapper
+  {
+    transition: none;
+  }
+}
+
+/* The details' layout, ported from MMDb's modals.css, movies.css and responsive.css, in Myflix's colours.
+   Bootstrap's col-lg columns are grids here, stacking below 1200px as they did. */
+.info
+{
+  --surface: #090909;
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, .7);
+  --faint: rgba(255, 255, 255, .1);
+  --divider: #333333;
+  --accent: #e50914;
+
+  font-weight: 300;
+
+  color: var(--text);
+  background: var(--surface);
+}
+
+/* The panel is barely lighter than the black page, so a light edge is what shows where it ends. */
+.info.open
+{
+  border-color: var(--faint);
+}
+
+.info-wrapper
+{
+  padding-inline: 15px;
+}
+
+.info hr
+{
+  margin: 20px 0;
+  border: 0;
+  border-top: 1px solid var(--divider);
+}
+
+/* UserPage's red rule under the second hr is for the page's tabs, not the drawer's dividers. */
+.info hr:nth-of-type(2)
+{
+  border-bottom: none !important;
+}
+
+#meta-data
+{
+  max-width: 1170px;
+  margin: 0 auto;
+  padding: 20px 0;
+
+  & h4
+  {
+    font-weight: 400;
+
+    margin-bottom: 0;
+  }
+
+  & h5
+  {
+    font-weight: 400;
+  }
+
+  & hr
+  {
+    margin-top: 10px;
+  }
+
+  & ul
+  {
+    padding: 0;
+    list-style: none;
+  }
+}
+
+#meta-data.show-info
+{
+  max-width: 1386px;
+}
+
+#info-body,
+#info-header
+{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 30px;
+}
+
+.description-poster
+{
+  margin-bottom: 30px;
+
+  & img
+  {
+    width: 340px;
+    max-width: 100%;
+    height: auto;
+
+    vertical-align: top;
+
+    border-radius: 6px;
+    background-color: var(--surface);
+  }
+}
+
+.description-details > .modal-title
+{
+  font-size: 1.75em;
+  font-weight: 500;
+
+  margin: 0 0 10px;
+}
+
+.description-info
+{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  row-gap: 6px;
+
+  & > *
+  {
+    flex-shrink: 0;
+  }
+}
+
+.spacing
+{
+  margin-right: 20px;
+}
+
+#ratings-container
+{
+  display: inline-flex;
+  align-items: center;
+  height: 21px;
+
+  & p
+  {
+    font-size: 9px;
+
+    margin: 0 0 0 5px;
+  }
+}
+
+.rated
+{
+  font-size: 18px;
+
+  color: #e4e4e4;
+
+  & .checked
+  {
+    color: var(--accent);
+  }
+}
+
+.description-plot
+{
+  margin: 20px 0;
+}
+
+.credits
+{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.studio
+{
+  margin-bottom: 25px;
+
+  & p
+  {
+    margin-top: -10px;
+  }
+}
+
+#info-header
+{
+  margin-top: 20px;
+
+  & > .description-poster img
+  {
+    width: 447px;
+
+    border: var(--faint) 1px solid;
+  }
+}
+
+.description-poster > #counts
+{
+  font-size: .9em;
+
+  margin-top: 10px;
+
+  color: var(--muted);
+}
+
+.series-info
+{
+  margin-left: 5px;
+
+  & h1
+  {
+    font-size: 30px;
+    font-weight: 500;
+
+    margin: 5px 0 0;
+  }
+
+  & #series-count
+  {
+    margin: 0 0 4px;
+
+    color: var(--muted);
+  }
+
+  & .spacing
+  {
+    margin-right: 10px;
+
+    color: var(--muted);
+  }
+}
+
+.series-details
+{
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.season-plot
+{
+  margin: 15px 0;
+}
+
+#season-selector
+{
+  font-size: .9em;
+
+  margin-left: 5px;
+
+  color: var(--muted);
+
+  & hr
+  {
+    margin-bottom: 8px;
+  }
+}
+
+.season-row
+{
+  display: flex;
+  overflow-x: auto;
+
+  scrollbar-width: none;
+}
+
+.season-submit
+{
+  flex: none;
+
+  padding: 3px 10px;
+
+  color: var(--muted);
+  border: none;
+  border-radius: 4px;
+  background: none;
+
+  font: inherit;
+
+  &#active-season
+  {
+    color: var(--text);
+    background: var(--accent);
+  }
+}
+
+.episode-list
+{
+  & > div
+  {
+    padding-left: 5px;
+  }
+
+  & hr
+  {
+    margin: 15px 0 5px 5px;
+  }
+}
+
+.episode-description:last-of-type
+{
+  margin-bottom: 50px;
+}
+
+.tv-episode
+{
+  font-size: .8em;
+  font-weight: 400;
+
+  margin: 10px 0 0;
+
+  color: var(--muted);
+}
+
+.aired
+{
+  margin-left: 20px;
+}
+
+.episode-title
+{
+  font-size: .9em;
+  font-weight: 400;
+
+  margin: 3px 0;
+}
+
+.episode-runtime
+{
+  font-size: .9em;
+
+  margin: 0;
+
+  text-align: right;
+
+  color: var(--muted);
+}
+
+.plot-truncate
+{
+  font-size: .9em;
+
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+
+  margin: 0;
+
+  color: var(--muted);
+
+  &.active
+  {
+    display: block;
+  }
+}
+
+.expand-plot
+{
+  font: inherit;
+  font-size: .95em;
+
+  display: block;
+
+  margin: 4px 0 0 auto;
+  padding: 0;
+
+  color: var(--accent);
+  border: none;
+  background: none;
+
+  &:hover
+  {
+    color: var(--text);
+  }
+}
+
+@media (max-width: 767px)
+{
+  .credits
+  {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1200px)
+{
+  #info-body
+  {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  }
+
+  #info-header
+  {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    grid-template-areas: 'poster info' 'poster episodes';
+    align-items: start;
+
+    & > .description-poster { grid-area: poster; }
+    & > .series-info { grid-area: info; }
+    & > .season-episodes { grid-area: episodes; }
+  }
+
+  .plot-truncate
+  {
+    display: block;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    &.active
+    {
+      white-space: pre-wrap;
+    }
+  }
+
+  .episode-runtime
+  {
+    margin: -20px -40px 0 0;
+  }
+
+  .expand-plot
+  {
+    margin: -18px -40px 0 auto;
+  }
+}
