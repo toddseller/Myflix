@@ -405,62 +405,6 @@
   }
 }
 
-/* Ported from MMDb's movies.css. */
-.season-row
-{
-  position: relative;
-
-  min-width: 0;
-}
-
-/* Positioned, so each season's offsetLeft is measured from the line's start; the padding keeps a focused season clear of the arrows. */
-.season-line
-{
-  position: relative;
-
-  display: flex;
-  overflow-x: auto;
-
-  scrollbar-width: none;
-  scroll-padding-inline: 34px;
-
-  &::-webkit-scrollbar
-  {
-    display: none;
-  }
-}
-
-.season-arrow
-{
-  position: absolute;
-  top: 0;
-  bottom: 0;
-
-  width: 34px;
-  padding: 0;
-
-  color: var(--text);
-  border: none;
-
-  &.left
-  {
-    left: 0;
-
-    text-align: left;
-
-    background: linear-gradient(to right, var(--surface) 60%, transparent);
-  }
-
-  &.right
-  {
-    right: 0;
-
-    text-align: right;
-
-    background: linear-gradient(to left, var(--surface) 60%, transparent);
-  }
-}
-
 .season-submit
 {
   flex: none;
