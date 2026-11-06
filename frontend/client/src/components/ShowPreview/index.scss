@@ -1,12 +1,31 @@
 .shows-list
 {
   display: grid;
-  grid-gap: .5rem 2rem;
-  grid-template-columns: repeat(auto-fit, 200px);
-  justify-content: center;
+  /* An auto column would keep the width of the block's last column count, so it couldn't narrow with the window. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: .5rem;
   max-width: 1560px;
   margin: 0 auto;
   margin-top: 140px;
+}
+
+/* The grid is drawn in blocks of whole rows (see UserPage), so the browser can skip a block far from the screen as one
+   unit, sized by the estimate UserPage gives it until it has been drawn once. */
+.shows-list > .grid-block
+{
+  display: grid;
+  grid-gap: .5rem 2rem;
+  grid-template-columns: repeat(auto-fit, 200px);
+  justify-content: center;
+
+  content-visibility: auto;
+  contain-intrinsic-height: auto var(--block-height);
+
+  /* After full blocks, a short last row keeps the columns above it rather than centring on its own. */
+  &.grid-block--last
+  {
+    grid-template-columns: repeat(auto-fill, 200px);
+  }
 }
 
 .show-preview

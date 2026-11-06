@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Profiler } from 'react'
 import { act, cleanup, fireEvent, waitFor } from '@testing-library/react'
 
 import mmdb from '../../apis/mmdb'
@@ -52,7 +52,7 @@ beforeEach(() => {
 
 const setup = async () => {
   const result = renderWithStore(<UserPage />)
-  await waitFor(() => expect(result.container.querySelectorAll('.movie-preview')).toHaveLength(7))
+  await waitFor(() => expect(result.container.querySelectorAll('.movie-preview')).toHaveLength(lists['/movies'].length))
   const tile = id => result.container.querySelector(`.movie-preview[id="${ id }"]`)
   const click = id => fireEvent.click(tile(id).querySelector('img'))
   const drawers = () => [...result.container.querySelectorAll('.info')]
@@ -71,10 +71,11 @@ it('opens the details under the clicked poster\'s row', async () => {
 })
 
 it('opens under a last, partly filled row', async () => {
-  const { click, container, drawers } = await setup()
+  const { click, tile, drawers } = await setup()
   click(7)
   await answer(7)
-  expect(container.querySelector('.movies-list').lastElementChild).toBe(drawers()[0])
+  expect(drawers()[0].previousElementSibling).toBe(tile(7))
+  expect(drawers()[0].nextElementSibling).toBeNull()
 })
 
 it('opens nothing when the details fail to load', async () => {
@@ -345,5 +346,94 @@ describe('search results', () => {
     expect(Object.values(store.getState().newShows)).toEqual([])
     expect(Object.values(store.getState().newEpisodes)).toEqual([])
     expect(container.querySelector('.shows-list').classList.contains('fixed')).toBe(false)
+  })
+})
+
+describe('blocks of tiles', () => {
+  // 420 is a multiple of every possible column count, so each block but the last ends on a full row.
+  // Padded so the grid's alphabetical order matches the ids, in the list and in the details alike.
+  const padded = id => ({ ...movie(id), sort_name: `m${ String(id).padStart(4, '0') }` })
+  const withMovies = async count => {
+    lists['/movies'] = Array.from({ length: count }, (_, i) => padded(i + 1))
+    try {
+      return await setup()
+    } finally {
+      lists['/movies'] = movies
+    }
+  }
+  const blocks = container => [...container.querySelectorAll('.movies-list > .grid-block')]
+
+  it('groups a long collection into blocks of 420', async () => {
+    const { container } = await withMovies(845)
+    expect(blocks(container).map(block => block.querySelectorAll(':scope > .movie-preview').length)).toEqual([420, 420, 5])
+    expect(blocks(container).map(block => block.classList.contains('grid-block--last'))).toEqual([false, false, true])
+  })
+
+  it('opens, swaps and re-places a drawer in the second block', async () => {
+    const { click, tile, drawers, container } = await withMovies(845)
+    click(425)
+    await answer(425, padded(425))
+    const drawer = drawers()[0]
+    expect(blocks(container)[1].contains(drawer)).toBe(true)
+    expect(tile(426).nextElementSibling).toBe(drawer)
+    click(426)
+    await answer(426, padded(426))
+    expect(drawers()).toEqual([drawer])
+    expect(drawer.querySelector('h2').textContent).toBe('M426')
+    perRow = 4
+    try {
+      act(() => {
+        Object.defineProperty(window, 'innerWidth', { configurable: true, writable: true, value: window.innerWidth + 100 })
+        window.dispatchEvent(new Event('resize'))
+      })
+      expect(tile(428).nextElementSibling).toBe(drawer)
+    } finally {
+      perRow = 3
+    }
+  })
+
+  // The page's width without a scrollbar; innerWidth stays the window's, as with a visible scrollbar.
+  const widths = (page, scrollbar = 0) => {
+    Object.defineProperty(document.documentElement, 'clientWidth', { configurable: true, value: page })
+    Object.defineProperty(window, 'innerWidth', { configurable: true, writable: true, value: page + scrollbar })
+  }
+  afterEach(() => { delete document.documentElement.clientWidth })
+
+  it('estimates each block\'s height from its rows, for when the browser skips it', async () => {
+    // At 1024px the list fits 5 columns of 174px with 2rem gaps.
+    widths(1024)
+    const { container } = await withMovies(845)
+    const heights = blocks(container).map(block => block.style.getPropertyValue('--block-height'))
+    expect(heights).toEqual([`${ 84 * 303 + 83 * 8 }px`, `${ 84 * 303 + 83 * 8 }px`, '303px'])
+  })
+
+  it('counts columns from the page\'s width, leaving out a visible scrollbar', async () => {
+    // 1405px fits 6 columns; the 1420px window around it would fit 7.
+    widths(1405, 15)
+    const { container } = await withMovies(845)
+    expect(blocks(container)[0].style.getPropertyValue('--block-height')).toBe(`${ 70 * 303 + 69 * 8 }px`)
+  })
+
+  it('re-renders on a resize only when the column count changes', async () => {
+    widths(1405)
+    const commits = vi.fn()
+    const { container } = renderWithStore(<Profiler id="page" onRender={ commits }><UserPage /></Profiler>)
+    await waitFor(() => expect(container.querySelectorAll('.movie-preview')).toHaveLength(7))
+    const resize = page => act(() => {
+      widths(page)
+      window.dispatchEvent(new Event('resize'))
+    })
+    commits.mockClear()
+    // Still 6 columns of movies and of shows; 1410px would be the first width with 7.
+    resize(1406)
+    expect(commits).not.toHaveBeenCalled()
+    resize(1500)
+    expect(commits).toHaveBeenCalled()
+  })
+
+  it('keeps a short collection in one plain block', async () => {
+    const { container } = await setup()
+    expect(blocks(container)).toHaveLength(1)
+    expect(blocks(container)[0].classList.contains('grid-block--last')).toBe(false)
   })
 })
