@@ -8,7 +8,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 import { startFetchMovies, startFetchMovie } from '../../actions/userMovie'
 import { startFetchShows, startFetchShow } from '../../actions/userShow'
-import { setTextFilter, setSelectedMedia } from '../../actions/filters'
+import { setTextFilter } from '../../actions/filters'
 import { getCounts } from '../../actions/counts'
 import { clearSearchNewMovies } from '../../actions/newMovie'
 import { clearSearchNewShows } from '../../actions/newShow'
@@ -83,9 +83,6 @@ class UserPage extends Component {
     return next === list ? null : { list: next, drawer: null, closing: null }
   }
 
-  toggleSelectedButton = tabId => {
-    this.props.setSelectedMedia(tabId)
-  }
 
   openSearch = () => {
     this.setState({ isSearching: true })
@@ -274,13 +271,13 @@ class UserPage extends Component {
           <Tabs activeTab={ selectedMedia } style={ ['default'] }>
             <Tabs.Tab
               tabId='movies'
-              onClick={ this.toggleSelectedButton }
+              onClick={ this.props.onSelectMedia }
             >
               Movies
             </Tabs.Tab>
             <Tabs.Tab
               tabId='tvShows'
-              onClick={ this.toggleSelectedButton }
+              onClick={ this.props.onSelectMedia }
             >
               TV Shows
             </Tabs.Tab>
@@ -336,7 +333,6 @@ const composedUserPage = compose(
     startFetchShows,
     startFetchShow,
     setTextFilter,
-    setSelectedMedia,
     getCounts,
     clearSearchNewMovies,
     clearSearchNewShows,
