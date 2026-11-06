@@ -9,7 +9,7 @@ import { renderWithStore } from '../../testing/render'
 vi.mock('../../apis/mmdb', () => ({ default: { get: vi.fn(() => new Promise(() => {})) } }))
 
 const setup = () => {
-  const props = { isLoading: vi.fn(), onSearch: vi.fn(), onClose: vi.fn() }
+  const props = { onSearch: vi.fn(), onClose: vi.fn() }
   const { container, store } = renderWithStore(<SearchBox { ...props } />)
   const buttons = container.querySelectorAll('button')
   return { container, store, props, input: container.querySelector('input[name="search"]'), toggle: buttons[0], submit: buttons[1], form: container.querySelector('form') }
@@ -27,13 +27,12 @@ it('renders a search input, a toggle button and a submit button', () => {
   expect(submit.getAttribute('type')).toBe('submit')
 })
 
-it('opens on the toggle button and reports loading', () => {
+it('opens on the toggle button', () => {
   const { container, toggle, props } = setup()
   const width = () => container.firstChild.style.width
   expect(width()).toBe('45px')
   fireEvent.click(toggle)
   expect(width()).toBe('345px')
-  expect(props.isLoading).toHaveBeenCalledTimes(1)
 })
 
 it('filters as you type', () => {

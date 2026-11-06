@@ -3,6 +3,8 @@ import { flushSync } from 'react-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import classnames from 'classnames'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 import { startFetchMovies, startFetchMovie } from '../../actions/userMovie'
 import { startFetchShows, startFetchShow } from '../../actions/userShow'
@@ -90,13 +92,22 @@ class UserPage extends Component {
     this.props.getCounts()
   }
 
-  // While results show, the grid is pinned and can't scroll to a drawer. The search text stays: it is also the
-  // grid's filter, and changing that would close the drawer being opened.
+  // Unpins the grid, so the page can scroll to a drawer again. The search text stays: it is also the grid's filter.
   closeSearch = () => {
     this.setState({ isSearching: false })
     if (this.props.selectedMedia === 'movies') return this.props.clearSearchNewMovies()
     this.props.clearSearchNewShows()
     this.props.clearSearchNewEpisodes()
+  }
+
+  // The button goes with the panel, so focus moves to the search box, which stays open with its text.
+  dismissResults = () => {
+    this.closeSearch()
+    document.querySelector('input[name="search"]')?.focus()
+  }
+
+  dismissOnEscape = event => {
+    if (event.key === 'Escape' && this.state.isSearching) this.closeSearch()
   }
 
   // Closing the search box or adding a title also refreshes the counts, which an add changes.
@@ -106,7 +117,6 @@ class UserPage extends Component {
   }
 
   toggleDrawer = async id => {
-    if (this.state.isSearching) this.closeSearch()
     const request = ++this.request
     const { drawer, list } = this.state
     if (drawer?.id === id) return this.setState({ drawer: null, closing: drawer })
@@ -149,22 +159,17 @@ class UserPage extends Component {
     })
   }
 
-  toggleIsLoading = () => {
-    this.setState(prevState => {
-      return { isLoading: !prevState.isLoading }
-    })
-  }
-
   componentDidMount() {
-    this.props.startFetchMovies()
-    this.props.startFetchShows()
+    // Settled rather than resolved, so a failed list still ends loading instead of spinning forever.
+    Promise.allSettled([this.props.startFetchMovies(), this.props.startFetchShows()]).then(() => this.setState({ isLoading: false }))
     this.props.getCounts()
     window.addEventListener('resize', this.followWidth)
-    return <LoadingPage />
+    document.addEventListener('keydown', this.dismissOnEscape)
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.followWidth)
+    document.removeEventListener('keydown', this.dismissOnEscape)
   }
 
   // Turning a phone changes how many posters fit a row. A phone browser's address bar also resizes the window as it
@@ -206,7 +211,7 @@ class UserPage extends Component {
       'shows-list',
       `${ isSearching ? 'fixed' : '' }`
     )
-    if (shows.length < 1 && isLoading) {
+    if (isLoading) {
       return <LoadingPage />
     }
 
@@ -263,7 +268,7 @@ class UserPage extends Component {
     return (
       <div className="user-page">
         <div className="search-bar">
-          <SearchBox onSearch={ this.openSearch } onClose={ this.endSearch } isLoading={ this.toggleIsLoading } />
+          <SearchBox onSearch={ this.openSearch } onClose={ this.endSearch } />
         </div>
         <div>
           <Tabs activeTab={ selectedMedia } style={ ['default'] }>
@@ -282,6 +287,11 @@ class UserPage extends Component {
           </Tabs>
         </div>
         <div className={ previewClasses }>
+          { isSearching &&
+            <button type="button" className="dismiss-results" aria-label="Dismiss search results" onClick={ this.dismissResults }>
+              <FontAwesomeIcon icon={ faXmark } />
+            </button>
+          }
           { newMovies.length === 0 && newShows.length === 0 && newEpisodes.length === 0 && isSearching
             ? <div className="searching-spinner">
                 <h1>Searching our database&#8230;</h1>

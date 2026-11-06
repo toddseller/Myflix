@@ -64,7 +64,6 @@ class SearchBox extends Component {
   onClick = () => {
     if (this.state.isOpen) this.props.onClose()
     this.setState({ isOpen: !this.state.isOpen, value: '' })
-    this.props.isLoading()
     this.props.setTextFilter('')
   }
 

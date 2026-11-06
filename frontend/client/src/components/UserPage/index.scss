@@ -156,6 +156,30 @@ hr:nth-of-type(2)
   }
 }
 
+/* MMDb's dismiss control: muted until pointed at. Above the row's arrows, which run its full height. */
+.dismiss-results
+{
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  right: 0;
+
+  width: 34px;
+  height: 34px;
+  padding: 0;
+
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, .7);
+  border: none;
+  background: none;
+
+  &:hover,
+  &:focus-visible
+  {
+    color: #ffffff;
+  }
+}
+
 .results-line
 {
   align-items: center;
