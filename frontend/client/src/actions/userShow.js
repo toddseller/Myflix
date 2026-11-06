@@ -63,5 +63,5 @@ export const startFetchShow = (id) => async (dispatch) => {
   const response = await mmdb.get(`/shows/${id}`);
 
   dispatch(fetchShow(response.data));
-  console.log(response.data);
+  return response.data;
 };

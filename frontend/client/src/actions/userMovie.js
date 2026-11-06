@@ -44,5 +44,5 @@ export const startFetchMovie = id => async dispatch => {
   const response = await mmdb.get(`/movies/${ id }`)
 
   dispatch(fetchMovie(response.data))
-  console.log(response.data)
+  return response.data
 }
