@@ -4,8 +4,6 @@
   /* An auto column would keep the width of the block's last column count, so it couldn't narrow with the window. */
   grid-template-columns: minmax(0, 1fr);
   gap: .5rem;
-  max-width: 1560px;
-  margin: 0 auto;
   margin-top: 140px;
 }
 
@@ -17,6 +15,9 @@
   grid-gap: .5rem 2rem;
   grid-template-columns: repeat(auto-fit, 200px);
   justify-content: center;
+  /* Blocks span the page, keeping their tiles to the middle 1560px: content-visibility clips a block to its box, and
+     the drawer inside it reaches out to the window's edges. */
+  padding-inline: max(0px, calc((100% - 1560px) / 2));
 
   content-visibility: auto;
   contain-intrinsic-height: auto var(--block-height);
@@ -45,6 +46,8 @@
   position: fixed;
   left: 50%;
   transform: translate(-50%);
+  /* The page's width, so the blocks centre their tiles as they do when the grid isn't pinned. */
+  width: 100%;
 }
 
 .truncate
