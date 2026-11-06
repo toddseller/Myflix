@@ -72,11 +72,23 @@
   contain-intrinsic-size: 200px 260px;
 }
 
-/* content-visibility clips a tile to its box, and the open tile draws outside it: the enlarged poster and the pointer. */
+/* content-visibility clips a tile, and its block, to their boxes, and the open tile draws outside them: the enlarged
+   poster, lifted above a block's first row, and the pointer. The open tile's block is on screen, so it was never being
+   skipped. Opening stops the clipping at once; closing brings it back only once the image has shrunk back (its
+   transform below takes .3s), so the whole poster shrinks as one. */
+.movies-list .movie-preview,
+.shows-list .show-preview,
+.grid-block
+{
+  transition: content-visibility 0s .3s allow-discrete;
+}
+
 .movies-list .movie-preview.open,
-.shows-list .show-preview.open
+.shows-list .show-preview.open,
+.grid-block:has(> .open)
 {
   content-visibility: visible;
+  transition: none;
 }
 
 /* Ported from MMDb's drawer.css and movies.css. Transforms don't affect layout, so the open poster grows without
