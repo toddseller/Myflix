@@ -437,3 +437,64 @@ describe('blocks of tiles', () => {
     expect(blocks(container)[0].classList.contains('grid-block--last')).toBe(false)
   })
 })
+
+it('puts a show from the collection first among the search results', async () => {
+  const { store, container } = await setup()
+  act(() => {
+    store.dispatch(setSelectedMedia('tvShows'))
+    store.dispatch({ type: 'FETCH_SEARCH_NEW_SHOWS', payload: [
+      { title: 'S Knights', season: 1, poster: 'k.jpg' },
+      { title: 'Night News', season: 1, poster: 'n.jpg' },
+      { show_id: 50, title: 'S50', season: 1, poster: 's.jpg' }
+    ] })
+  })
+  const cards = [...container.querySelectorAll('.new-preview .show-preview .truncate')].map(card => card.textContent)
+  expect(cards).toEqual(['S50', 'S Knights', 'Night News'])
+})
+
+describe('the search results row', () => {
+  const show = i => ({ title: `Found ${ i }`, season: 1, poster: `${ i }.jpg` })
+  const episode = i => ({ title: `Episode ${ i }`, tv_episode: i, preview: `e${ i }.jpg` })
+
+  it('shows the spinner alone while a search has no results yet', async () => {
+    const { container } = await setup()
+    fireEvent.change(container.querySelector('input[name="search"]'), { target: { value: '5' } })
+    fireEvent.submit(container.querySelector('form'))
+    expect(container.querySelector('.new-preview .searching-spinner')).not.toBeNull()
+    expect(container.querySelector('.new-preview .results-row')).toBeNull()
+  })
+
+  it('holds the show results', async () => {
+    const { store, container } = await setup()
+    act(() => {
+      store.dispatch(setSelectedMedia('tvShows'))
+      store.dispatch({ type: 'FETCH_SEARCH_NEW_SHOWS', payload: [show(1), show(2)] })
+    })
+    expect(container.querySelectorAll('.new-preview .results-line > .show-preview')).toHaveLength(2)
+  })
+
+  it('holds a season\'s episodes and the card that adds them all', async () => {
+    const { store, container } = await setup()
+    act(() => {
+      store.dispatch(setSelectedMedia('tvShows'))
+      store.dispatch({ type: 'FETCH_SEARCH_NEW_EPISODES', payload: [episode(1), episode(2), episode(3)] })
+    })
+    expect(container.querySelectorAll('.new-preview .results-line > .episode-preview')).toHaveLength(4)
+  })
+
+  it('offers arrows to reach results past the edge', async () => {
+    // jsdom does no layout: the row is 1000px wide and each card 200px.
+    const sizes = {
+      clientWidth: { get() { return this.classList.contains('results-line') ? 1000 : 0 } },
+      scrollWidth: { get() { return this.classList.contains('results-line') ? this.children.length * 200 : 0 } }
+    }
+    for (const [name, stub] of Object.entries(sizes)) Object.defineProperty(HTMLElement.prototype, name, { configurable: true, ...stub })
+    try {
+      const { store, container } = await setup()
+      act(() => { store.dispatch({ type: 'FETCH_SEARCH_NEW_MOVIES', payload: Array.from({ length: 12 }, (_, i) => ({ title: `Film ${ i }`, year: 2000, poster: `${ i }.jpg` })) }) })
+      expect([...container.querySelectorAll('.new-preview .results-arrow')].filter(arrow => !arrow.hidden).map(arrow => arrow.getAttribute('aria-label'))).toEqual(['Later results'])
+    } finally {
+      for (const name of Object.keys(sizes)) delete HTMLElement.prototype[name]
+    }
+  })
+})

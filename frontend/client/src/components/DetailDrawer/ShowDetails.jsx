@@ -1,59 +1,32 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useLayoutEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
 import { decodeEntities } from '../../utils/decodeEntities'
-import { easeHeight, reduced, reveal } from '../../utils/motion'
+import { easeHeight, reveal } from '../../utils/motion'
 import { HdBadge, RatingBadge } from './badges'
 import Poster from './Poster'
+import ScrollRow from '../ScrollRow'
 
 const plural = (count, word) => `${ count } ${ word }${ count === 1 ? '' : 's' }`
 
 // The arrows' width, which is also the line's scroll-padding-inline in index.scss.
 const ARROW = 34
 
-const SeasonLine = ({ seasons, shown, onPick }) => {
-  const line = useRef(null)
-  const [arrows, setArrows] = useState({ left: false, right: false })
-  const update = () => {
-    const { scrollLeft, clientWidth, scrollWidth } = line.current
-    setArrows({ left: scrollLeft > 0, right: scrollLeft + clientWidth < scrollWidth - 1 })
-  }
-
-  // Before paint, so the line is never seen scrolling. Once per show, so a season switch leaves it where it was.
-  useLayoutEffect(() => {
-    const el = line.current
-    const active = el.querySelector('#active-season')
-    const end = active.offsetLeft + active.offsetWidth + ARROW
-    el.scrollLeft = Math.min(Math.max(0, end - el.clientWidth), el.scrollWidth - el.clientWidth)
-    update()
-  }, [])
-
-  useEffect(() => {
-    window.addEventListener('resize', update)
-    return () => window.removeEventListener('resize', update)
-  }, [])
-
-  const page = direction => line.current.scrollBy({ left: direction * line.current.clientWidth, behavior: reduced() ? 'auto' : 'smooth' })
-
-  return (
-    <div className="season-row">
-      <div className="season-line" ref={ line } onScroll={ update }>
-        { seasons.map(({ id, season: number }) => (
-          <button type="button" key={ id } className="season-submit" id={ id === shown ? 'active-season' : undefined }
-                  aria-pressed={ id === shown } onClick={ event => onPick(event, id) }>{ number }</button>
-        )) }
-      </div>
-      <button type="button" className="season-arrow left" aria-label="Earlier seasons" hidden={ !arrows.left } onClick={ () => page(-1) }>
-        <FontAwesomeIcon icon={ faChevronLeft } />
-      </button>
-      <button type="button" className="season-arrow right" aria-label="Later seasons" hidden={ !arrows.right } onClick={ () => page(1) }>
-        <FontAwesomeIcon icon={ faChevronRight } />
-      </button>
-    </div>
-  )
+// Placed before paint, so the line is never seen scrolling; once per show, so a season switch leaves it where it was.
+const placeOnActive = line => {
+  const active = line.querySelector('#active-season')
+  const end = active.offsetLeft + active.offsetWidth + ARROW
+  line.scrollLeft = Math.min(Math.max(0, end - line.clientWidth), line.scrollWidth - line.clientWidth)
 }
+
+const SeasonLine = ({ seasons, shown, onPick }) => (
+  <ScrollRow name="season" label="seasons" place={ placeOnActive }>
+    { seasons.map(({ id, season: number }) => (
+      <button type="button" key={ id } className="season-submit" id={ id === shown ? 'active-season' : undefined }
+              aria-pressed={ id === shown } onClick={ event => onPick(event, id) }>{ number }</button>
+    )) }
+  </ScrollRow>
+)
 
 const Episode = ({ episode }) => {
   const plot = useRef(null)

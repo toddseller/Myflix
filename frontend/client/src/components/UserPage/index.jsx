@@ -19,10 +19,12 @@ import ShowPreview from '../ShowPreview'
 import SearchBox from '../searchbox/SearchBox'
 import NewMediaPreview from '../NewMediaPreview'
 import Tabs from '../Tabs'
+import ScrollRow from '../ScrollRow'
 import DetailDrawer from '../DetailDrawer'
 import MovieDetails from '../DetailDrawer/MovieDetails'
 import ShowDetails from '../DetailDrawer/ShowDetails'
 import { rowEnd } from '../../utils/rowEnd'
+import { rankShowResults } from '../../utils/rankShowResults'
 import { easeHeight, holdStill, reveal } from '../../utils/motion'
 
 import './index.scss'
@@ -272,16 +274,19 @@ class UserPage extends Component {
           </Tabs>
         </div>
         <div className={ previewClasses }>
-          { newMovies.length === 0 && newShows.length === 0 && newEpisodes.length === 0 && isSearching &&
-          <div className="searching-spinner">
-            <h1>Searching our database&#8230;</h1>
-            <LoadingSpinner />
-          </div>
-          }
-          { newMediaPreview() }
-          { newEpisodes.length > 1 &&
-          <NewMediaPreview key={ 'allEpisodes' } media={ newEpisodes } onClick={ this.onClick }
-                           mediaType={ 'tvEpisode' } episodeCount={ newEpisodes.length } />
+          { newMovies.length === 0 && newShows.length === 0 && newEpisodes.length === 0 && isSearching
+            ? <div className="searching-spinner">
+                <h1>Searching our database&#8230;</h1>
+                <LoadingSpinner />
+              </div>
+            // Not both: the row fills the panel, which would push the spinner off its centre.
+            : <ScrollRow name="results" label="results">
+                { newMediaPreview() }
+                { newEpisodes.length > 1 &&
+                <NewMediaPreview key={ 'allEpisodes' } media={ newEpisodes } onClick={ this.onClick }
+                                 mediaType={ 'tvEpisode' } episodeCount={ newEpisodes.length } />
+                }
+              </ScrollRow>
           }
         </div>
         { displayList() }
@@ -296,7 +301,7 @@ const mapStateToProps = (state) => {
     movies: FilteredMoviesSelector(state),
     newMovies: Object.values(state.newMovies),
     shows: FilteredShowsSelector(state),
-    newShows: Object.values(state.newShows),
+    newShows: rankShowResults(Object.values(state.newShows), state.shows, state.filters.text),
     moviesCount: state.counts.moviesCount,
     showsCount: state.counts.showsCount,
     episodesCount: state.counts.episodesCount,
