@@ -8,3 +8,12 @@ services:
     restart: unless-stopped
     ports:
       - "7666:80"
+    volumes:
+      # MMDb's weekly newsletter writes each issue's browser copy here; nginx serves them at /newsletter/.
+      # A missing folder fails the deploy instead of being created root-owned, which the newsletter (uid 1000) can't write to.
+      - type: bind
+        source: ../MMDb/newsletter/issues
+        target: /usr/share/nginx/html/newsletter
+        read_only: true
+        bind:
+          create_host_path: false

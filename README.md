@@ -2,7 +2,7 @@
 
 A React front end for a personal movie and TV collection, served at [myflix.stream](https://myflix.stream). Its data comes from MMDb's API.
 
-The client lives in `frontend/client` (Vite, React, Vitest). `frontend/Dockerfile` builds it into an nginx image, and `docker-compose.yml` runs that image on port 7666, which a Cloudflare tunnel serves as myflix.stream.
+The client lives in `frontend/client` (Vite, React, Vitest). `frontend/Dockerfile` builds it into an nginx image, and `docker-compose.yml` runs that image on port 7666, which a Cloudflare tunnel serves as myflix.stream. It also mounts `~/MMDb/newsletter/issues` read-only at `/newsletter/`, where MMDb's weekly newsletter saves the browser copy of each issue; the folder must exist on the server (`mkdir -p ~/MMDb/newsletter/issues`), or the container won't start.
 
 ## Developing
 
