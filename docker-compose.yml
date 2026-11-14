@@ -8,3 +8,6 @@ services:
     restart: unless-stopped
     ports:
       - "7666:80"
+    volumes:
+      # MMDb's weekly newsletter writes each issue's browser copy here; nginx serves them at /newsletter/.
+      - ../MMDb/newsletter/issues:/usr/share/nginx/html/newsletter:ro
