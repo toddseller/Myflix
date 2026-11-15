@@ -18,7 +18,8 @@ class ShowPreview extends Component {
         <img src={ show.poster } alt={ `${ title } poster` } width={ 200 } height={ 200 } loading="lazy"
              onClick={ this._onClick } />
         <p className="truncate">{ title }</p>
-        <p className="seasons">{ parseInt(show.seasonCount) >= 5 ? `${show.seasonNumbers} Seasons` : parseInt(show.seasonCount) > 1 ? `Seasons ${show.seasonNumbers}` : `Season ${show.seasonNumbers}`}</p>
+        {/* Empty season numbers, not a count of 0, mark a show with only specials: MMDb has stale counts of 0 on some one-season shows. */}
+        <p className="seasons">{ show.seasonNumbers === '' ? 'Specials' : parseInt(show.seasonCount) >= 5 ? `${show.seasonNumbers} Seasons` : parseInt(show.seasonCount) > 1 ? `Seasons ${show.seasonNumbers}` : `Season ${show.seasonNumbers}`}</p>
         <div className="pointer" />
       </div>
     )

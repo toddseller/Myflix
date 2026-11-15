@@ -4,6 +4,7 @@
 Defines how the search panel presents the titles found to add to the collection: the order a show search's results come in, and that every result in the panel can be reached.
 
 ## Requirements
+
 ### Requirement: A show search puts the collection's own shows first
 The results of a show search SHALL list the seasons of shows already in the user's collection first, then seasons whose show title matches the search text exactly (ignoring case and surrounding spaces), then every other result. Within each group, results SHALL keep the order MMDb returned them in, so a show's seasons stay in sequence.
 
@@ -126,3 +127,10 @@ While the results panel is open, a dismiss button SHALL show at its top right, n
 #### Scenario: Nothing to dismiss
 - **WHEN** no search is open
 - **THEN** no dismiss button shows, and Escape changes nothing
+
+### Requirement: A specials season is listed as Specials
+In a show search's results, a season numbered 0 SHALL be labelled "Specials" in place of "Season 0". Other seasons SHALL keep their "Season N" label.
+
+#### Scenario: A stored show with specials
+- **WHEN** the user searches for a show whose results include its seasons 1 and 0
+- **THEN** the results label those seasons "Season 1" and "Specials"

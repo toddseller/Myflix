@@ -619,6 +619,19 @@ it('puts a show from the collection first among the search results', async () =>
   expect(cards).toEqual(['S50', 'S Knights', 'Night News'])
 })
 
+it('lists a specials season as Specials among the search results', async () => {
+  const { store, container } = await setup()
+  act(() => {
+    store.dispatch(setSelectedMedia('tvShows'))
+    store.dispatch({ type: 'FETCH_SEARCH_NEW_SHOWS', payload: [
+      { show_id: 50, title: 'S50', season: 1, poster: 's1.jpg' },
+      { show_id: 50, title: 'S50', season: 0, poster: 's0.jpg' }
+    ] })
+  })
+  const labels = [...container.querySelectorAll('.new-preview .show-preview .year')].map(label => label.textContent)
+  expect(labels).toEqual(['Season 1', 'Specials'])
+})
+
 describe('the search results row', () => {
   const show = i => ({ title: `Found ${ i }`, season: 1, poster: `${ i }.jpg` })
   const episode = i => ({ title: `Episode ${ i }`, tv_episode: i, preview: `e${ i }.jpg` })
