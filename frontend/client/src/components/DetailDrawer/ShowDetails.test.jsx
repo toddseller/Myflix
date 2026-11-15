@@ -48,6 +48,27 @@ it('names a single season by its number', () => {
   expect(screen.getByText('1 season, 2 episodes')).toBeTruthy()
 })
 
+it('leaves the specials out of the season count but counts their episodes', () => {
+  const regular = Array.from({ length: 14 }, (_, index) => season(index + 1, { episodes: [episode(1), episode(2)] }))
+  open({ seasons: [season(0, { episodes: [episode(1), episode(2), episode(3)] }), ...regular] })
+  expect(screen.getByText('14 seasons, 31 episodes')).toBeTruthy()
+  expect(screen.getByText('14 seasons')).toBeTruthy()
+})
+
+it('names the one regular season beside the specials, even with the specials shown', () => {
+  open({ seasons: [season(3, { is_active: true, episodes: [episode(1), episode(2)] }), season(0)] })
+  expect(screen.getByText('1 season, 3 episodes')).toBeTruthy()
+  expect(screen.getByText('Season 3')).toBeTruthy()
+  fireEvent.click(screen.getByRole('button', { name: 'Specials' }))
+  expect(screen.getByText('Season 3')).toBeTruthy()
+})
+
+it('reads Specials for a show with only specials', () => {
+  open({ seasons: [season(0, { episodes: [episode(1), episode(2)] })] })
+  expect(screen.getByText('Specials, 2 episodes')).toBeTruthy()
+  expect(screen.getByText('Specials', { selector: '#series-count' })).toBeTruthy()
+})
+
 it('opens on the active season', () => {
   const container = open({ seasons: [season(4), season(2, { is_active: true }), season(1), season(3)] })
   expect(screen.getByText('4 seasons')).toBeTruthy()
@@ -62,6 +83,11 @@ it('opens on the lowest season when none is active', () => {
   expect(pressed()).toEqual(['1'])
 })
 
+it('opens on the lowest regular season, not the specials, when none is active', () => {
+  open({ seasons: [season(0), season(2), season(1)] })
+  expect(pressed()).toEqual(['1'])
+})
+
 it('switches seasons without a request', () => {
   const container = open({ seasons: [season(1, { is_active: true }), season(2, { episodes: [episode(1, 'Second season opener')] })] })
   fireEvent.click(screen.getByRole('button', { name: '2' }))
@@ -70,6 +96,14 @@ it('switches seasons without a request', () => {
   expect(screen.getByText('Second season opener')).toBeTruthy()
   expect(container.querySelector('.description-poster img').getAttribute('src')).toBe('s2.jpg')
   expect(mmdb.get).not.toHaveBeenCalled()
+})
+
+it('names season 0 Specials and puts it after the regular seasons', () => {
+  const container = open({ seasons: [season(0), season(1, { is_active: true }), season(2)] })
+  expect([...container.querySelectorAll('.season-submit')].map(button => button.textContent)).toEqual(['1', '2', 'Specials'])
+  fireEvent.click(screen.getByRole('button', { name: 'Specials' }))
+  expect(pressed()).toEqual(['Specials'])
+  expect(screen.getByText('Season 0 plot')).toBeTruthy()
 })
 
 it('lists episodes in order with their details', () => {

@@ -7,6 +7,7 @@ import { clearSearchNewMovies } from '../../actions/newMovie'
 import { startAddShow, startAddEpisodes } from '../../actions/userShow'
 import { clearSearchNewShows } from '../../actions/newShow'
 import { startFetchSearchNewEpisodes, clearSearchNewEpisodes } from '../../actions/newEpisode'
+import { seasonName } from '../../utils/seasons'
 
 import './newMediaPreview.scss'
 
@@ -56,7 +57,7 @@ class NewMediaPreview extends Component {
                  height={ imgHeight } width={ imgWidth } />
             <p className="truncate">{ media.title }</p>
             <p
-              className="year">{ mediaType === 'movie' ? media.year : mediaType === 'tvShow' ? `Season ${ media.season }` : `Episode ${ media.tv_episode }` }</p>
+              className="year">{ mediaType === 'movie' ? media.year : mediaType === 'tvShow' ? seasonName(media.season) : `Episode ${ media.tv_episode }` }</p>
           </div>
         )
       }

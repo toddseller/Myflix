@@ -3,6 +3,7 @@ import { flushSync } from 'react-dom'
 
 import { decodeEntities } from '../../utils/decodeEntities'
 import { easeHeight, reveal } from '../../utils/motion'
+import { isSpecials, seasonName } from '../../utils/seasons'
 import { HdBadge, RatingBadge } from './badges'
 import Poster from './Poster'
 import ScrollRow from '../ScrollRow'
@@ -23,7 +24,7 @@ const SeasonLine = ({ seasons, shown, onPick }) => (
   <ScrollRow name="season" label="seasons" place={ placeOnActive }>
     { seasons.map(({ id, season: number }) => (
       <button type="button" key={ id } className="season-submit" id={ id === shown ? 'active-season' : undefined }
-              aria-pressed={ id === shown } onClick={ event => onPick(event, id) }>{ number }</button>
+              aria-pressed={ id === shown } onClick={ event => onPick(event, id) }>{ isSpecials(number) ? 'Specials' : number }</button>
     )) }
   </ScrollRow>
 )
@@ -58,13 +59,15 @@ const Episode = ({ episode }) => {
 }
 
 export default function ShowDetails({ show }) {
-  const seasons = [...show.seasons].sort((a, b) => a.season - b.season)
+  const seasons = [...show.seasons].sort((a, b) => isSpecials(a.season) - isSpecials(b.season) || a.season - b.season)
   const [picked, setPicked] = useState(() => (seasons.find(season => season.is_active) ?? seasons[0]).id)
   const [previous, setPrevious] = useState(null)
   const season = seasons.find(({ id }) => id === picked)
   const shown = season.id
   const episodes = [...season.episodes].sort((a, b) => a.tv_episode - b.tv_episode)
   const episodeCount = seasons.reduce((sum, { episodes }) => sum + episodes.length, 0)
+  const regular = seasons.filter(({ season }) => !isSpecials(season))
+  const seasonCount = regular.length ? plural(regular.length, 'season') : 'Specials'
   const title = decodeEntities(show.title)
 
   const placeholder = previous ?? show.poster
@@ -83,11 +86,11 @@ export default function ShowDetails({ show }) {
       <div id="info-header">
         <div className="description-poster">
           <Poster src={ season.poster } placeholder={ placeholder } alt={ `${ title } Poster` } />
-          <p id="counts">{ `${ plural(seasons.length, 'season') }, ${ plural(episodeCount, 'episode') }` }</p>
+          <p id="counts">{ `${ seasonCount }, ${ plural(episodeCount, 'episode') }` }</p>
         </div>
         <div className="series-info">
           <h1>{ title }</h1>
-          <p id="series-count">{ seasons.length > 1 ? plural(seasons.length, 'season') : `Season ${ season.season }` }</p>
+          <p id="series-count">{ regular.length === 1 ? seasonName(regular[0].season) : seasonCount }</p>
           <div className="series-details">
             <span className="spacing">{ decodeEntities(show.genre) }</span>
             <span className="spacing">{ show.year }</span>
